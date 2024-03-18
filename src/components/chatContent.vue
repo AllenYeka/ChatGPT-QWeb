@@ -1,22 +1,22 @@
 <template>
    <div class="chatContent">
-      <!--<div class="mask" v-show="validMaskShow">
+      <div class="mask" v-show="validMaskShow">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="validKey" @keyup.enter="valid" @click="clickValidInput($event.target)" />
             <el-button type="danger" @click="valid" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
          </div>
-      </div>-->
+      </div>
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
-               <h5 class="username">{{ thema.uname }}</h5>
+               <h5 class="username" v-show="unameShow">{{ thema.uname }}</h5>
                <img :src="thema.imgsrc" class="userh" />
                <div :class="thema.userTextClass">{{ chat.user }}</div><br>
                <CopyDocument :class="thema.copyClass" @click="copyTextToClipboard(chat.user)" /><br>
 
-               <h5 class="gptname">ChatGPT</h5>
+               <h5 class="gptname" v-show="gptnameShow">ChatGPT</h5>
                <img src="../assets/gpt.png" class="gptHead" />
                <div :class="thema.gptTextClass">{{ chat.gpt }}</div><br>
                <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" v-show="copyShowIf(chat.id)" />
@@ -132,6 +132,8 @@ let thema = reactive({
 })
 let maskShow = ref(false)//(设置框)遮罩层显示与否
 let validMaskShow = ref(true)//(验证窗口)遮罩层显示与否
+let unameShow = ref(true)//username显示与否
+let gptnameShow = ref(true)//gptname显示与否
 let validKey = ref('')
 let trueKey = ref('032418')//访问密码
 
@@ -392,6 +394,24 @@ function clearAllMessage() {//清空缓存
    ElMessage.success({ message: '缓存已全部清除', duration: 600 })
    location.reload()
 }
+function nameShowIf() {//uname和gptname的显示
+   let chatContentEl = document.getElementsByClassName('chatContent')[0]
+   if (chatContentEl.offsetWidth < 1000) {
+      unameShow.value = false
+      gptnameShow.value = false
+   }
+   else {
+      unameShow.value = true
+      gptnameShow.value = true
+   }
+}
+function nameHidden() {//隐藏uname和gptname
+   let chatContentEl = document.getElementsByClassName('chatContent')[0]
+   if (chatContentEl.offsetWidth < 1000) {
+      unameShow.value = false
+      gptnameShow.value = false
+   }
+}
 
 
 /* 钩子 */
@@ -439,6 +459,8 @@ onMounted(() => {
       localStorage.setItem('chatList', JSON.stringify(chatList))
       localStorage.setItem('gptParams', JSON.stringify(gptParams))
    })
+   window.onresize = nameShowIf
+   nameHidden()
    themaRandom()
 })
 </script>
@@ -447,16 +469,17 @@ onMounted(() => {
 <style scoped>
 .userh {
    position: absolute;
-   left: 10%;
+   margin-left: 10%;
    top: 5%;
-   width: 45px;
+   width: 6%;
    border: 2px solid white;
    border-radius: 100%;
    opacity: 0.8;
 }
 .username {
    position: absolute;
-   left: 17.2%;
+   margin-left: 17.2%;
+   font-size: 85%;
    margin-top: 2%;
 }
 .userText {
@@ -466,20 +489,21 @@ onMounted(() => {
    color: rgba(0, 0, 0, 0.758);
    background-color: rgba(255, 0, 0, 0.136);
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    font-size: 14px;
 }
 .gptHead {
    margin-top: 1%;
-   left: 10%;
+   margin-left: 10%;
    position: absolute;
-   width: 43px;
+   width: 5.7%;
    border: 2px solid white;
    border-radius: 100%;
 }
 .gptname {
    position: absolute;
-   left: 17.2%;
+   font-size: 85%;
+   margin-left: 17.2%;
    margin-top: 2%;
 }
 .gptText {
@@ -489,7 +513,7 @@ onMounted(() => {
    color: rgba(0, 0, 0, 0.76);
    background-color: rgba(119, 136, 153, 0.225);
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    font-size: 14px;
 }
 .closeIcon {
@@ -744,7 +768,7 @@ onMounted(() => {
    color: rgba(0, 0, 0, 0.758);
    background-color: lightcyan;
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    font-size: 14px;
 }
 .gptText_blue {
@@ -754,7 +778,7 @@ onMounted(() => {
    color: rgba(0, 0, 0, 0.76);
    background-color: rgba(128, 0, 128, 0.133);
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    font-size: 14px;
 }
 .deleteClass_blue {
@@ -809,18 +833,17 @@ onMounted(() => {
    color: rgba(0, 0, 0, 0.758);
    background-color: rgba(144, 238, 144, 0.473);
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    font-size: 14px;
 }
 .gptText_green {
    color: rgba(0, 0, 0, 0.758);
    background-color: rgba(250, 198, 135, 0.415);
    border-radius: 7px;
-   padding: 8px;
+   padding: 1%;
    display: inline-block;
    margin-left: 17%;
    margin-top: 4.5%;
-   margin-bottom: 5px;
    font-size: 14px;
    position: relative;
 }

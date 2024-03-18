@@ -6,7 +6,7 @@
             <el-icon>
                <ChatDotRound />
             </el-icon>
-            {{chat.content}}
+            <p v-show="titleShow">{{chat.content}}</p>
             <el-icon v-show="chat.saveIcon" @click="saveName(chat)" style="position:absolute;right:28px">
                <DocumentChecked />
             </el-icon>
@@ -14,22 +14,22 @@
                <EditPen />
             </el-icon>
             <input type="text" v-show="chat.renameInput" @keyup.enter="saveName(chat)" v-model="chat.content" style="width:20%;height:30%;background:none;">
-            <el-icon @click.stop="deleteChat(chat)" style="position:absolute;right:5px">
+            <el-icon @click.stop="deleteChat(chat)" v-show="deleteShow" style="position:absolute;right:5px">
                <DeleteFilled />
             </el-icon>
          </div>
       </div>
       <div class="userInfo">
          <img src="../assets/hutao/h2.jpg" style="width:22%;border-radius:100%;position:absolute;left:5%;top:15%;" />
-         <p style="position:absolute;left:32%;top:20%;font-size:18px;">{{thema.uname}}</p>
-         <h6 style="position:absolute;left:32%;top:55%;">本项目由WRQ开发,且开源于<a href="https://github.com/AllenYeka/ChatGPT-QWeb.git">GitHub</a></h6>
+         <p style="position:absolute;left:32%;top:20%;font-size:120%;">{{thema.uname}}</p>
+         <h6 style="position:absolute;left:32%;top:55%;font-size:70%">本项目由WRQ开发,且开源于<a href="https://github.com/AllenYeka/ChatGPT-QWeb.git">GitHub</a></h6>
       </div>
    </div>
 </template>
 
 
 <script setup>
-import { reactive, onMounted, onBeforeMount } from 'vue'
+import { ref, reactive, onMounted, onBeforeMount } from 'vue'
 import emitter from '../utils/event-bus'
 import { ElMessage } from "element-plus"
 /* data */
@@ -38,6 +38,8 @@ let thema = reactive({//主题
    uname: '胡桃',
    newChatClass: 'newChat'
 })
+let titleShow = ref(true)
+let deleteShow = ref(true)
 
 
 /* method */
@@ -88,6 +90,30 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
       chatboxs[i].style.color = ''
    el.style.color = chatThema.color
 }
+function chatBoxHidden() {//隐藏聊天框
+   let chatsEl = document.getElementsByClassName('chats')[0]
+   if (chatsEl.offsetWidth <= 236) {
+      titleShow.value = false
+      for (let i = 0; i < chats.length; i++)
+         chats[i].editIcon = false
+      deleteShow.value = false
+   }
+}
+function chatboxShow() {//是否隐藏聊天框
+   let chatsEl = document.getElementsByClassName('chats')[0]
+   if (chatsEl.offsetWidth <= 236) {
+      titleShow.value = false
+      for (let i = 0; i < chats.length; i++)
+         chats[i].editIcon = false
+      deleteShow.value = false
+   }
+   else {
+      for (let i = 0; i < chats.length; i++)
+         chats[i].editIcon = true
+      deleteShow.value = true
+      titleShow.value = true
+   }
+}
 function LingHua() {
    let pictureNumber = Math.floor(Math.random() * 2) + 1
    let imgsrc = "url('src/assets/linghua/l1-" + pictureNumber + ".jpg') 0px 0px/cover"
@@ -135,6 +161,8 @@ onMounted(() => {
       else
          HuTao()
    })
+   window.onresize = chatboxShow
+   chatBoxHidden()
 })
 
 </script>
@@ -193,8 +221,10 @@ onMounted(() => {
 .chatBox {
    width: 22%;
    height: 750px;
-   opacity: 0.6;
+   opacity: 0.7;
    background: url(../assets/hutao/h1-1.jpg) 0px 0px / cover;
+   border-right: 1px solid rgba(128, 128, 128, 0.467);
+   box-sizing: border-box;
    display: flex;
    flex-wrap: wrap;
    justify-content: center;
