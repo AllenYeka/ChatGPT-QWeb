@@ -640,7 +640,7 @@ onMounted(() => {
 }
 .chatContent {
    width: 78%;
-   height: 750px;
+   height: 100%;
    background-color: rgba(255, 136, 0, 0.04);
    display: flex;
    flex-wrap: wrap;

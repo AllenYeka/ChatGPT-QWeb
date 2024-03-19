@@ -217,10 +217,11 @@ onMounted(() => {
    color: grey;
    transition: all 0.4s;
    margin-top: 5%;
+   overflow: hidden;
 }
 .chatBox {
    width: 22%;
-   height: 750px;
+   height: 100%;
    opacity: 0.7;
    background: url(../assets/hutao/h1-1.jpg) 0px 0px / cover;
    border-right: 1px solid rgba(128, 128, 128, 0.467);
