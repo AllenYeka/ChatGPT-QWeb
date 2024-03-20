@@ -644,6 +644,7 @@ onMounted(() => {
    background-color: rgba(255, 136, 0, 0.04);
    display: flex;
    flex-wrap: wrap;
+   transition: all 0.4s;
 }
 .settingBox h3 {
    transform: translate(45%);

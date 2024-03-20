@@ -227,6 +227,7 @@ onMounted(() => {
    flex-wrap: wrap;
    justify-content: center;
    overflow: hidden;
+   transition: all 0.4s;
 }
 
 /* 蓝色主题 */
