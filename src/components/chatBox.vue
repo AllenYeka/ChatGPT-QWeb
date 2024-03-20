@@ -6,7 +6,7 @@
             <el-icon>
                <ChatDotRound />
             </el-icon>
-            <p v-show="titleShow">{{chat.content}}</p>
+            {{chat.content}}
             <el-icon v-show="chat.saveIcon" @click="saveName(chat)" style="position:absolute;right:28px">
                <DocumentChecked />
             </el-icon>
@@ -38,7 +38,6 @@ let thema = reactive({//主题
    uname: '胡桃',
    newChatClass: 'newChat'
 })
-let titleShow = ref(true)
 let deleteShow = ref(true)
 
 
@@ -90,19 +89,9 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
       chatboxs[i].style.color = ''
    el.style.color = chatThema.color
 }
-function chatBoxHidden() {//隐藏聊天框
+function chatboxShow() {
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
-      titleShow.value = false
-      for (let i = 0; i < chats.length; i++)
-         chats[i].editIcon = false
-      deleteShow.value = false
-   }
-}
-function chatboxShow() {//是否隐藏聊天框
-   let chatsEl = document.getElementsByClassName('chats')[0]
-   if (chatsEl.offsetWidth <= 236) {
-      titleShow.value = false
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = false
       deleteShow.value = false
@@ -111,7 +100,14 @@ function chatboxShow() {//是否隐藏聊天框
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = true
       deleteShow.value = true
-      titleShow.value = true
+   }
+}
+function chatboxHidden() {
+   let chatsEl = document.getElementsByClassName('chats')[0]
+   if (chatsEl.offsetWidth <= 236) {
+      for (let i = 0; i < chats.length; i++)
+         chats[i].editIcon = false
+      deleteShow.value = false
    }
 }
 function LingHua() {
@@ -161,8 +157,8 @@ onMounted(() => {
       else
          HuTao()
    })
-   window.onresize = chatboxShow
-   chatBoxHidden()
+   window.addEventListener('resize', () => { chatboxShow() })
+   chatboxHidden()//用于移动端
 })
 
 </script>
@@ -192,6 +188,7 @@ onMounted(() => {
    margin-bottom: 5%;
    border-radius: 10px;
    transition: all 0.4s;
+   font-size: 15px;
    display: flex;
    justify-content: center;
    align-items: center;
