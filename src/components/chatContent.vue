@@ -1,13 +1,13 @@
 <template>
    <div class="chatContent">
-      <!--<div class="mask" v-show="validMaskShow">
+      <div class="mask" v-show="validMaskShow">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="validKey" @keyup.enter="valid" @click="clickValidInput($event.target)" />
             <el-button type="danger" @click="valid" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
          </div>
-      </div>-->
+      </div>
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">

@@ -90,7 +90,7 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
       chatboxs[i].style.color = ''
    el.style.color = chatThema.color
 }
-function chatboxShow() {
+function chatboxShow() {//window窗口变化时的回调函数
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
