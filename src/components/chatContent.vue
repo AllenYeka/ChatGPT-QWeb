@@ -1,13 +1,13 @@
 <template>
    <div class="chatContent">
-      <div class="mask" v-show="validMaskShow">
+      <!--<div class="mask" v-show="validMaskShow">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="validKey" @keyup.enter="valid" @click="clickValidInput($event.target)" />
             <el-button type="danger" @click="valid" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
          </div>
-      </div>
+      </div>-->
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
@@ -30,8 +30,12 @@
          <img src="../assets/hutao/h3.jpg" />
       </div>
       <div class="userMsg">
-         <Setting :class="thema.settingClass" @click="openSetting" />
-         <Delete :class="thema.deleteClass" @click="deleteContent" />
+         <el-tooltip effect="dark" content="设置" placement="top">
+            <Setting :class="thema.settingClass" @click="openSetting" />
+         </el-tooltip>
+         <el-tooltip effect="dark" content="删除当前聊天内容" placement="top">
+            <Delete :class="thema.deleteClass" @click="deleteContent" />
+         </el-tooltip>
          <input type="text" class="userContent" @keyup.enter="getMessageIf" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
          <el-button @click="getMessageIf" :disabled="sendButton()" id="sendButton" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;position:absolute;right:2%;top:20%" />
       </div>
@@ -72,7 +76,9 @@
             <el-button @click="saveParam" :type="thema.buttonType" class="saveButton">保存</el-button>
          </div>
       </div>
-
+      <div v-show="operationShowIf">
+         <Operation class="operation" @click="chatboxExpand" />
+      </div>
    </div>
 </template>
 
@@ -136,6 +142,8 @@ let unameShow = ref(true)//username显示与否
 let gptnameShow = ref(true)//gptname显示与否
 let validKey = ref('')
 let trueKey = ref('032418')//访问密码
+let expand = ref(true)//chatBox状态
+let operationShowIf = ref(true)
 
 
 /* watch */
@@ -394,9 +402,9 @@ function clearAllMessage() {//清空缓存
    ElMessage.success({ message: '缓存已全部清除', duration: 600 })
    location.reload()
 }
-function nameShowIf() {//uname和gptname的显示
+function mobileShowIf() {//移动端部分元素的显示
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
-   if (chatContentEl.offsetWidth < 1000) {
+   if (chatContentEl.offsetWidth < 1000) {//uname和gptname显示与否
       unameShow.value = false
       gptnameShow.value = false
    }
@@ -404,14 +412,44 @@ function nameShowIf() {//uname和gptname的显示
       unameShow.value = true
       gptnameShow.value = true
    }
+   if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500) {//chatBox展开与否
+      operationShowIf.value = false
+      expand.value = true
+   }
+   else {
+      operationShowIf.value = true
+      expand.value = false
+   }
 }
-function nameHidden() {//隐藏uname和gptname
+function mobileInitHidden() {//移动端初始化隐藏元素
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
-   if (chatContentEl.offsetWidth < 1000) {
+   if (chatContentEl.offsetWidth < 1000) {//隐藏uname和gptname
       unameShow.value = false
       gptnameShow.value = false
    }
+   if (window.innerWidth < 935) {
+      document.getElementsByClassName('chatContent')[0].style.width = '100%'
+      expand.value = false
+   }
+   if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)//chatBox展开与否
+      operationShowIf.value = false
+   else
+      operationShowIf.value = true
 }
+function chatboxExpand() {//控制chatBox的展开和闭合
+   if (expand.value == false) {//展开chatBox
+      expand.value = true
+      document.getElementsByClassName('chatContent')[0].style.width = '20%'
+      emitter.emit("chatboxExpand", 'expand')
+   }
+   else {//收起chatBox
+      expand.value = false
+      document.getElementsByClassName('chatContent')[0].style.width = '100%'
+      emitter.emit("chatboxExpand", 'hidden')
+   }
+}
+
+
 
 
 /* 钩子 */
@@ -459,8 +497,16 @@ onMounted(() => {
       localStorage.setItem('chatList', JSON.stringify(chatList))
       localStorage.setItem('gptParams', JSON.stringify(gptParams))
    })
-   window.onresize = nameShowIf
-   nameHidden()
+   emitter.on('chatBoxShow', (val) => {//chatBox显示与隐藏
+      if (val == 'hidden') {
+         document.getElementsByClassName('chatContent')[0].style.width = "100%"
+      }
+      else {
+         document.getElementsByClassName('chatContent')[0].style.width = "78%"
+      }
+   })
+   window.onresize = mobileShowIf
+   mobileInitHidden()
    themaRandom()
 })
 </script>
@@ -490,7 +536,7 @@ onMounted(() => {
    background-color: rgba(255, 0, 0, 0.136);
    border-radius: 7px;
    padding: 1%;
-   font-size: 14px;
+   font-size: 90%;
 }
 .gptHead {
    margin-top: 1%;
@@ -514,7 +560,7 @@ onMounted(() => {
    background-color: rgba(119, 136, 153, 0.225);
    border-radius: 7px;
    padding: 1%;
-   font-size: 14px;
+   font-size: 90%;
 }
 .closeIcon {
    transform: translate(454px);
@@ -645,6 +691,7 @@ onMounted(() => {
    display: flex;
    flex-wrap: wrap;
    transition: all 0.4s;
+   position: relative;
 }
 .settingBox h3 {
    transform: translate(45%);
@@ -727,6 +774,20 @@ onMounted(() => {
 }
 .valid input:hover {
    border: rgba(255, 42, 0, 0.319) 2px solid;
+}
+.el-tooltip__trigger {
+   outline: none;
+}
+.operation {
+   width: 27px;
+   position: absolute;
+   left: 1%;
+   top: 1%;
+   color: grey;
+   transition: all 0.3s;
+}
+.operation:hover {
+   color: rgba(0, 0, 0, 0.878);
 }
 
 /*蓝色主题*/

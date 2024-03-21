@@ -4,7 +4,7 @@
       <div class="chats">
          <div v-for='chat of chats' :key='chat.id' @click="sendChatId(chat.id, $event.target)">
             <el-icon>
-               <ChatDotRound />
+               <ChatDotRound v-show="chatShow" />
             </el-icon>
             {{chat.content}}
             <el-icon v-show="chat.saveIcon" @click="saveName(chat)" style="position:absolute;right:28px">
@@ -39,6 +39,7 @@ let thema = reactive({//主题
    newChatClass: 'newChat'
 })
 let deleteShow = ref(true)
+let chatShow = ref(true)
 
 
 /* method */
@@ -95,19 +96,38 @@ function chatboxShow() {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = false
       deleteShow.value = false
+      chatShow.value = false
    }
    else {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = true
       deleteShow.value = true
+      chatShow.value = true
+   }
+   if (window.innerWidth < 935) {
+      document.getElementsByClassName('chatBox')[0].style.width = '0%'
+      emitter.emit('chatBoxShow', 'hidden')
+   }
+   else {
+      document.getElementsByClassName('chatBox')[0].style.width = '22%'
+      emitter.emit('chatBoxShow', 'show')
    }
 }
-function chatboxHidden() {
+function mobileInitHidden() {//移动端初始化隐藏元素
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = false
       deleteShow.value = false
+      chatShow.value = false
+   }
+   if (window.innerWidth < 935) {
+      document.getElementsByClassName('chatBox')[0].style.width = '0%'
+      emitter.emit('chatBoxShow', 'hidden')
+   }
+   else {
+      document.getElementsByClassName('chatBox')[0].style.width = '22%'
+      emitter.emit('chatBoxShow', 'show')
    }
 }
 function LingHua() {
@@ -142,7 +162,6 @@ function HuTao() {
 }
 
 
-
 /* 钩子 */
 onBeforeMount(() => {
    if (localStorage.getItem('chats') != null)
@@ -157,8 +176,14 @@ onMounted(() => {
       else
          HuTao()
    })
+   emitter.on('chatboxExpand', (val) => {
+      if (val == 'expand')//chatBox展开时
+         document.getElementsByClassName('chatBox')[0].style.width = '80%'
+      else//chatBox闭合时
+         document.getElementsByClassName('chatBox')[0].style.width = '0%'
+   })
    window.addEventListener('resize', () => { chatboxShow() })
-   chatboxHidden()//用于移动端
+   mobileInitHidden()//用于移动端
 })
 
 </script>
