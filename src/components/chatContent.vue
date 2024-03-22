@@ -517,7 +517,7 @@ onMounted(() => {
 </script>
 
 
-<style scoped>
+<style scoped lang="less">
 .userh {
    position: absolute;
    margin-left: 10%;
@@ -574,16 +574,15 @@ onMounted(() => {
    margin-bottom: 15px;
    position: relative;
 }
-
 .copyDocument {
    margin-top: 1%;
    margin-left: 18%;
    color: grey;
    width: 15px;
    transition: all 0.2s;
-}
-.copyDocument:hover {
-   color: red;
+   &:hover {
+      color: red;
+   }
 }
 .refresh {
    position: absolute;
@@ -592,45 +591,9 @@ onMounted(() => {
    margin-top: 1%;
    width: 15px;
    transition: all 0.2s;
-}
-.refresh:hover {
-   color: red;
-}
-
-.logo div:nth-child(1) {
-   position: absolute;
-   color: rgba(255, 89, 0, 0.245);
-   width: 1%;
-   left: 28%;
-   top: 4%;
-   font: 33px 楷体;
-}
-.logo div:nth-child(2) {
-   position: absolute;
-   color: rgba(255, 89, 0, 0.245);
-   width: 1%;
-   left: 54%;
-   top: 5%;
-   font: 33px 楷体;
-   margin-top: 30%;
-}
-.logo img {
-   position: absolute;
-   left: 22%;
-   width: 63%;
-   bottom: 10%;
-   transition: all 0.4s;
-   opacity: 0.8;
-}
-.logo img:hover {
-   width: 66%;
-}
-
-.deleteClass:hover {
-   color: red;
-}
-.setting:hover {
-   color: red;
+   &:hover {
+      color: red;
+   }
 }
 .userMsg {
    width: 100%;
@@ -645,6 +608,9 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 1.3%;
+   &:hover {
+      color: red;
+   }
 }
 .deleteClass {
    color: rgba(128, 128, 128, 0.815);
@@ -653,6 +619,9 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 4.5%;
+   &:hover {
+      color: red;
+   }
 }
 .userContent {
    left: 8%;
@@ -674,6 +643,34 @@ onMounted(() => {
    height: 88%;
    position: relative;
    overflow: hidden;
+   img {
+      position: absolute;
+      left: 22%;
+      width: 63%;
+      bottom: 10%;
+      transition: all 0.4s;
+      opacity: 0.8;
+      &:hover {
+         width: 66%;
+      }
+   }
+   div:nth-child(1) {
+      position: absolute;
+      color: rgba(255, 89, 0, 0.245);
+      width: 1%;
+      left: 28%;
+      top: 4%;
+      font: 33px 楷体;
+   }
+   div:nth-child(2) {
+      position: absolute;
+      color: rgba(255, 89, 0, 0.245);
+      width: 1%;
+      left: 54%;
+      top: 5%;
+      font: 33px 楷体;
+      margin-top: 30%;
+   }
 }
 .myChat {
    width: 84%;
@@ -689,10 +686,6 @@ onMounted(() => {
    transition: all 0.4s;
    position: relative;
 }
-
-.settingBox h3 {
-   transform: translate(45%);
-}
 .closeIcon {
    position: absolute;
    left: 94.6%;
@@ -701,10 +694,10 @@ onMounted(() => {
    width: 4%;
    transition: all 0.4s;
    padding: 5px;
-}
-.closeIcon:hover {
-   background-color: red;
-   color: white;
+   &:hover {
+      background-color: red;
+      color: white;
+   }
 }
 .el-button.saveButton {
    width: 80px;
@@ -723,14 +716,16 @@ onMounted(() => {
    border: solid whitesmoke 2px;
    background-color: white;
    transition: all 0.3s;
-}
-.settingBox:hover {
-   box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
+   &:hover {
+      box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
+   }
+   h3 {
+      transform: translate(45%);
+   }
 }
 .el-tooltip__trigger {
    outline: none;
 }
-
 .mask {
    position: fixed;
    top: 0;
@@ -748,32 +743,31 @@ onMounted(() => {
    border-radius: 15px;
    width: 560px;
    height: 330px;
+   header {
+      margin-top: 3%;
+      font: 23px 楷体;
+      text-align: center;
+      color: red;
+      text-shadow: 2px 2px 5px yellow;
+   }
+   img {
+      width: 20%;
+      margin-left: 38%;
+      margin-top: 5%;
+   }
+   input {
+      background-color: #f0f0f0;
+      width: 88%;
+      margin-left: 6%;
+      margin-top: 4%;
+      transition: all 0.4s;
+      height: 10%;
+      border: grey 1px solid;
+      outline: none;
+      font-size: 15px;
+      padding-left: 5px;
+   }
 }
-.valid img {
-   width: 20%;
-   margin-left: 38%;
-   margin-top: 5%;
-}
-.valid header {
-   margin-top: 3%;
-   font: 23px 楷体;
-   text-align: center;
-   color: red;
-   text-shadow: 2px 2px 5px yellow;
-}
-.valid input {
-   background-color: #f0f0f0;
-   width: 88%;
-   margin-left: 6%;
-   margin-top: 4%;
-   transition: all 0.4s;
-   height: 10%;
-   border: grey 1px solid;
-   outline: none;
-   font-size: 15px;
-   padding-left: 5px;
-}
-
 .operation {
    width: 27px;
    position: absolute;
@@ -781,11 +775,10 @@ onMounted(() => {
    top: 2%;
    color: grey;
    transition: all 0.3s;
+   &:hover {
+      color: rgba(0, 0, 0, 0.878);
+   }
 }
-.operation:hover {
-   color: rgba(0, 0, 0, 0.878);
-}
-
 /*蓝色主题*/
 .copyDocument_blue {
    margin-top: 1%;
@@ -793,9 +786,9 @@ onMounted(() => {
    color: grey;
    width: 15px;
    transition: all 0.2s;
-}
-.copyDocument_blue:hover {
-   color: blue;
+   &:hover {
+      color: blue;
+   }
 }
 .refresh_blue {
    position: absolute;
@@ -804,9 +797,9 @@ onMounted(() => {
    margin-top: 1%;
    width: 15px;
    transition: all 0.2s;
-}
-.refresh_blue:hover {
-   color: blue;
+   &:hover {
+      color: blue;
+   }
 }
 .setting_blue {
    color: grey;
@@ -815,9 +808,9 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 1.3%;
-}
-.setting_blue:hover {
-   color: rgba(0, 0, 255, 0.771);
+   &:hover {
+      color: rgba(0, 0, 255, 0.771);
+   }
 }
 .userText_blue {
    margin-left: 17%;
@@ -846,11 +839,10 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 4.5%;
+   &:hover {
+      color: blue;
+   }
 }
-.deleteClass_blue:hover {
-   color: blue;
-}
-
 /*绿色主题*/
 .copyDocument_green {
    margin-top: 1%;
@@ -858,9 +850,9 @@ onMounted(() => {
    color: grey;
    width: 15px;
    transition: all 0.2s;
-}
-.copyDocument_green:hover {
-   color: green;
+   &:hover {
+      color: green;
+   }
 }
 .refresh_green {
    position: absolute;
@@ -869,9 +861,9 @@ onMounted(() => {
    margin-top: 1%;
    width: 15px;
    transition: all 0.2s;
-}
-.refresh_green:hover {
-   color: green;
+   &:hover {
+      color: green;
+   }
 }
 .setting_green {
    color: grey;
@@ -880,9 +872,9 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 1.3%;
-}
-.setting_green:hover {
-   color: green;
+   &:hover {
+      color: green;
+   }
 }
 .userText_green {
    margin-left: 17%;
@@ -912,8 +904,8 @@ onMounted(() => {
    position: absolute;
    top: 26%;
    left: 4.5%;
-}
-.deleteClass_green:hover {
-   color: green;
+   &:hover {
+      color: green;
+   }
 }
 </style>

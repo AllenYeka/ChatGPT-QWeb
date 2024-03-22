@@ -192,15 +192,7 @@ onMounted(() => {
 </script>
 
 
-<style scoped>
-.chats div:hover {
-   transform: translate(0px, -3px);
-   box-shadow: 0px 5px 10px rgba(128, 128, 128, 0.484);
-}
-.newChat:hover {
-   color: rgba(255, 0, 0, 0.886);
-   border: red dashed 1px;
-}
+<style scoped lang="less">
 .userInfo {
    width: 90%;
    height: 12%;
@@ -209,21 +201,6 @@ onMounted(() => {
    overflow: hidden;
    position: relative;
 }
-.chats div {
-   width: 90%;
-   height: 10%;
-   border: 1px solid rgba(0, 0, 0, 0.53);
-   margin-bottom: 5%;
-   border-radius: 10px;
-   transition: all 0.4s;
-   font-size: 15px;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   position: relative;
-   overflow: hidden;
-   cursor: default;
-}
 .chats {
    width: 90%;
    height: 72%;
@@ -231,6 +208,25 @@ onMounted(() => {
    flex-wrap: wrap;
    justify-content: center;
    align-content: flex-start;
+   div {
+      width: 90%;
+      height: 10%;
+      border: 1px solid rgba(0, 0, 0, 0.53);
+      margin-bottom: 5%;
+      border-radius: 10px;
+      transition: all 0.4s;
+      font-size: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+   }
+   div:hover {
+      transform: translate(0px, -3px);
+      box-shadow: 0px 5px 10px rgba(128, 128, 128, 0.484);
+   }
 }
 .newChat {
    width: 90%;
@@ -243,6 +239,10 @@ onMounted(() => {
    transition: all 0.4s;
    margin-top: 5%;
    overflow: hidden;
+   &:hover {
+      color: rgba(255, 0, 0, 0.886);
+      border: red dashed 1px;
+   }
 }
 .chatBox {
    width: 22%;
@@ -269,10 +269,10 @@ onMounted(() => {
    color: grey;
    transition: all 0.4s;
    margin-top: 5%;
-}
-.newChat_blue:hover {
-   border: 1.5px dashed blue;
-   color: rgba(0, 0, 255, 0.771);
+   &:hover {
+      border: 1.5px dashed blue;
+      color: rgba(0, 0, 255, 0.771);
+   }
 }
 
 /* 绿色主题 */
@@ -286,9 +286,9 @@ onMounted(() => {
    color: grey;
    transition: all 0.4s;
    margin-top: 5%;
-}
-.newChat_green:hover {
-   border: 1.5px dashed green;
-   color: green;
+   &:hover {
+      border: 1.5px dashed green;
+      color: green;
+   }
 }
 </style>
