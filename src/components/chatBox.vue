@@ -4,7 +4,7 @@
       <div class="chats">
          <div v-for='chat of chats' :key='chat.id' @click="sendChatId(chat.id, $event.target)">
             <el-icon>
-               <ChatDotRound v-show="chatShow" />
+               <ChatDotRound v-show="elShowIf.chatDot" />
             </el-icon>
             {{chat.content}}
             <el-icon v-show="chat.saveIcon" @click="saveName(chat)" style="position:absolute;right:28px">
@@ -14,7 +14,7 @@
                <EditPen />
             </el-icon>
             <input type="text" v-show="chat.renameInput" @keyup.enter="saveName(chat)" v-model="chat.content" style="width:20%;height:30%;background:none;">
-            <el-icon @click.stop="deleteChat(chat)" v-show="deleteShow" style="position:absolute;right:5px">
+            <el-icon @click.stop="deleteChat(chat)" v-show="elShowIf.deleteFilled" style="position:absolute;right:5px">
                <DeleteFilled />
             </el-icon>
          </div>
@@ -38,8 +38,11 @@ let thema = reactive({//主题
    uname: '胡桃',
    newChatClass: 'newChat'
 })
-let deleteShow = ref(true)
-let chatShow = ref(true)
+let elShowIf = reactive({//部分元素的显示与否
+   chatDot: true,
+   deleteFilled: true
+})
+
 
 
 /* method */
@@ -90,19 +93,19 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
       chatboxs[i].style.color = ''
    el.style.color = chatThema.color
 }
-function chatboxShow() {//window窗口变化时的回调函数
+function chatBoxShow() {//window窗口变化时的回调函数
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = false
-      deleteShow.value = false
-      chatShow.value = false
+      elShowIf.deleteFilled = false
+      elShowIf.chatDot = false
    }
    else {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = true
-      deleteShow.value = true
-      chatShow.value = true
+      elShowIf.deleteFilled = true
+      elShowIf.chatDot = true
    }
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
@@ -118,8 +121,8 @@ function mobileInitHidden() {//移动端初始化隐藏元素
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
          chats[i].editIcon = false
-      deleteShow.value = false
-      chatShow.value = false
+      elShowIf.deleteFilled = false
+      elShowIf.chatDot = false
    }
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
@@ -182,7 +185,7 @@ onMounted(() => {
       else//chatBox闭合时
          document.getElementsByClassName('chatBox')[0].style.width = '0%'
    })
-   window.addEventListener('resize', () => { chatboxShow() })
+   window.addEventListener('resize', () => { chatBoxShow() })
    mobileInitHidden()//用于移动端
 })
 

@@ -1,22 +1,22 @@
 <template>
    <div class="chatContent">
-      <div class="mask" v-show="validMaskShow">
+      <div class="mask" v-show="mask.valid">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
-            <input type="password" v-model="validKey" @keyup.enter="valid" @click="clickValidInput($event.target)" />
-            <el-button type="danger" @click="valid" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
+            <input type="password" v-model="valid.userMsg" @keyup.enter="userValid()" />
+            <el-button type="danger" @click="userValid()" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
          </div>
       </div>
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
-               <h5 class="username" v-show="unameShow">{{ thema.uname }}</h5>
+               <h5 class="username" v-show="elShowIf.username">{{ thema.uname }}</h5>
                <img :src="thema.imgsrc" class="userh" />
                <div :class="thema.userTextClass">{{ chat.user }}</div><br>
                <CopyDocument :class="thema.copyClass" @click="copyTextToClipboard(chat.user)" /><br>
 
-               <h5 class="gptname" v-show="gptnameShow">ChatGPT</h5>
+               <h5 class="gptname" v-show="elShowIf.gptname">ChatGPT</h5>
                <img src="../assets/gpt.png" class="gptHead" />
                <div :class="thema.gptTextClass">{{ chat.gpt }}</div><br>
                <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" v-show="copyShowIf(chat.id)" />
@@ -36,13 +36,13 @@
          <el-tooltip effect="dark" content="删除当前聊天内容" placement="top">
             <Delete :class="thema.deleteClass" @click="deleteContent" />
          </el-tooltip>
-         <input type="text" class="userContent" @keyup.enter="getMessageIf" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
-         <el-button @click="getMessageIf" :disabled="sendButton()" id="sendButton" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;position:absolute;right:2%;top:20%" />
+         <input type="text" class="userContent" @keyup.enter="getMessage()" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
+         <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;height:50%;position:absolute;right:2%;top:20%;" />
       </div>
-      <div class="mask" v-show="maskShow">
-         <div class="settingBox" v-show="settingBoxShow">
+      <div class="mask" v-show="mask.setting">
+         <div class="settingBox" v-show="elShowIf.setting">
             <h3>配置</h3>
-            <Close class="closeIcon" @click="closeSetting" /><br>
+            <Close class="closeIcon" @click="closeSetting()" /><br>
             <el-form :model="formData" label-suffix=":">
                <el-form-item label="API-KEY">
                   <el-input v-model="formData.key" clearable />
@@ -76,8 +76,8 @@
             <el-button @click="saveParam" :type="thema.buttonType" class="saveButton">保存</el-button>
          </div>
       </div>
-      <div v-show="operationShowIf">
-         <Operation class="operation" @click="chatboxExpand" />
+      <div v-show="elShowIf.operation">
+         <Operation class="operation" @click="chatBoxShowIf()" />
       </div>
    </div>
 </template>
@@ -123,7 +123,6 @@ let chatList = reactive([//聊天记录的集合(用于渲染)
       }]
    }
 ])
-let settingBoxShow = ref(false)//设置框显示与否
 let thema = reactive({
    uname: '胡桃',
    settingClass: 'setting',
@@ -136,15 +135,21 @@ let thema = reactive({
    color: 'red',
    deleteClass: 'deleteClass'
 })
-let maskShow = ref(false)//(设置框)遮罩层显示与否
-let validMaskShow = ref(true)//(验证窗口)遮罩层显示与否
-let unameShow = ref(true)//username显示与否
-let gptnameShow = ref(true)//gptname显示与否
-let validKey = ref('')
-let trueKey = ref('032418')//访问密码
-let expand = ref(true)//chatBox状态
-let operationShowIf = ref(true)
-
+let mask = reactive({//遮罩层
+   setting: false,//设置框
+   valid: true//验证窗
+})
+let elShowIf = reactive({//部分元素的显示与否
+   setting: false,
+   username: true,
+   gptname: true,
+   chatBox: true,
+   operation: true
+})
+let valid = reactive({//验证窗口
+   userMsg: '',
+   password: '032418'
+})
 
 /* watch */
 watch(chatId, (newval, oldval) => {
@@ -153,7 +158,7 @@ watch(chatId, (newval, oldval) => {
 
 
 /* methods */
-function getMessage() {//调用接口
+function getMessage() {
    let tempNewUserContent = newUserContent.value//临时变量
    let newChat = { id: chatList[chatId.value - 1].content.length, user: tempNewUserContent, gpt: '' }
    chatList[chatId.value - 1].content.push(newChat)//chatList[chatId.value - 1].content是当前聊天记录
@@ -197,27 +202,22 @@ function getMessage() {//调用接口
       }
    })
 }
-function getMessageIf() {
-   if (newUserContent == '')
-      ElMessage.warning({ message: '发送的消息不能为空!', duration: 800 })
-   getMessage()
-}
-function saveParam() {//设置框的参数赋给gptParam
+function saveParam() {//保存设置
    apikey.value = formData.key
    gptParams[chatId.value - 1].gptParam.model = formData.model
    gptParams[chatId.value - 1].gptParam.messages[0].content = formData.systemContent1 + ',' + formData.systemContent2
    chatList[chatId.value - 1].content[0].user = formData.systemContent1 + ',' + formData.systemContent2
-   settingBoxShow.value = false
-   maskShow.value = false
+   elShowIf.setting = false
+   mask.setting = false
    ElMessage.success({ message: '保存成功' })
 }
 function closeSetting() {
-   settingBoxShow.value = false
-   maskShow.value = false
+   elShowIf.setting = false
+   mask.setting = false
 }
 function openSetting() {
-   settingBoxShow.value = true
-   maskShow.value = true
+   elShowIf.setting = true
+   mask.setting = true
 }
 function userContentBorder(el) {
    if (formData.thema == '绿色') {
@@ -385,17 +385,14 @@ function deleteContent() {//删除聊天内容
    else
       ElMessage.warning({ message: '无法删除', duration: 600 })
 }
-function clickValidInput(el) {
-   el.style.border = 'red 1px solid'
-}
-function valid() {//验证
-   if (validKey.value == trueKey.value) {
-      validMaskShow.value = false
-      ElMessage.success({ message: '验证成功', duration: 700 })
+function userValid() {//验证
+   if (valid.userMsg == valid.password) {
+      mask.valid = false
+      ElMessage.success({ message: '验证成功', duration: 1000 })
    }
    else
       ElMessage.error({ message: '验证失败', duration: 700 })
-   validKey.value = ''
+   valid.userMsg = ''
 }
 function clearAllMessage() {//清空缓存
    localStorage.clear()
@@ -405,45 +402,49 @@ function clearAllMessage() {//清空缓存
 function mobileShowIf() {//移动端部分元素的显示
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
    if (chatContentEl.offsetWidth < 1000) {//uname和gptname显示与否
-      unameShow.value = false
-      gptnameShow.value = false
+      elShowIf.username = false
+      elShowIf.gptname = false
    }
    else {
-      unameShow.value = true
-      gptnameShow.value = true
+      elShowIf.username = true
+      elShowIf.gptname = true
    }
+
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500) {//chatBox展开与否
-      operationShowIf.value = false
-      expand.value = true
+      elShowIf.operation = false
+      elShowIf.chatBox = true
    }
    else {
-      operationShowIf.value = true
-      expand.value = false
+      elShowIf.operation = true
+      elShowIf.chatBox = false
    }
 }
-function mobileInitHidden() {//移动端初始化隐藏元素
+function mobileInit() {//移动端初始化元素
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
    if (chatContentEl.offsetWidth < 1000) {//隐藏uname和gptname
-      unameShow.value = false
-      gptnameShow.value = false
+      elShowIf.username = false
+      elShowIf.gptname = false
    }
-   if (window.innerWidth < 935) {
+   if (window.innerWidth < 935) {//移动端初始化
       document.getElementsByClassName('chatContent')[0].style.width = '100%'
-      expand.value = false
+      document.getElementsByClassName('logo')[0].style.width = "0%"
+      document.getElementsByClassName('myChat')[0].style.width = "100%"
+      document.getElementsByClassName('deleteClass')[0].style.display = "none"
+      document.getElementsByClassName('userContent')[0].style.width = "70%"
+      document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
+      elShowIf.chatBox = false
    }
-   if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)//chatBox展开与否
-      operationShowIf.value = false
-   else
-      operationShowIf.value = true
+   if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
+      elShowIf.operation = false
 }
-function chatboxExpand() {//控制chatBox的展开和闭合
-   if (expand.value == false) {//展开chatBox
-      expand.value = true
+function chatBoxShowIf() {//控制chatBox显示
+   if (elShowIf.chatBox == false) {//展开chatBox
+      elShowIf.chatBox = true
       document.getElementsByClassName('chatContent')[0].style.width = '20%'
       emitter.emit("chatboxExpand", 'expand')
    }
    else {//收起chatBox
-      expand.value = false
+      elShowIf.chatBox = false
       document.getElementsByClassName('chatContent')[0].style.width = '100%'
       emitter.emit("chatboxExpand", 'hidden')
    }
@@ -461,11 +462,12 @@ onBeforeMount(() => {
 
 })
 onMounted(() => {
-   emitter.on('chatId', (val) => {//当前聊天记录的id
+   window.addEventListener('resize', () => { mobileShowIf() })
+   emitter.on('chatId', (val) => {//当前聊天记录
       chatId.value = val
       console.log('当前聊天记录id: ' + val)
    })
-   emitter.on('newChatId', (val) => {//新建的聊天记录的id
+   emitter.on('newChatId', (val) => {//新建聊天记录
       chatList.push({ chatId: val, content: [{ id: 0, user: '我是一个男大学生,作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述', gpt: '可能有部分bug' }] })
       let msgAndGpt = {
          messageId: val,
@@ -500,14 +502,17 @@ onMounted(() => {
    emitter.on('chatBoxShow', (val) => {//chatBox显示与隐藏
       if (val == 'hidden') {
          document.getElementsByClassName('chatContent')[0].style.width = "100%"
+         document.getElementsByClassName('logo')[0].style.width = "0%"
+         document.getElementsByClassName('myChat')[0].style.width = "100%"
       }
       else {
          document.getElementsByClassName('chatContent')[0].style.width = "78%"
+         document.getElementsByClassName('logo')[0].style.width = "16%"
+         document.getElementsByClassName('myChat')[0].style.width = "84%"
       }
    })
-   window.onresize = mobileShowIf
-   mobileInitHidden()
-   themaRandom()
+   mobileInit()//移动端初始化隐藏元素
+   themaRandom()//随机主题
 })
 </script>
 
@@ -562,18 +567,14 @@ onMounted(() => {
    padding: 1%;
    font-size: 90%;
 }
-.closeIcon {
-   transform: translate(454px);
-   bottom: 55px;
-   color: grey;
-   width: 21px;
-   transition: all 0.4s;
-   padding: 5px;
+.twochat {
+   width: 80%;
+   height: auto;
+   margin-left: 12%;
+   margin-bottom: 15px;
+   position: relative;
 }
-.closeIcon:hover {
-   background-color: red;
-   color: white;
-}
+
 .copyDocument {
    margin-top: 1%;
    margin-left: 18%;
@@ -595,6 +596,7 @@ onMounted(() => {
 .refresh:hover {
    color: red;
 }
+
 .logo div:nth-child(1) {
    position: absolute;
    color: rgba(255, 89, 0, 0.245);
@@ -623,13 +625,7 @@ onMounted(() => {
 .logo img:hover {
    width: 66%;
 }
-.twochat {
-   width: 80%;
-   height: auto;
-   margin-left: 12%;
-   margin-bottom: 15px;
-   position: relative;
-}
+
 .deleteClass:hover {
    color: red;
 }
@@ -644,7 +640,7 @@ onMounted(() => {
 }
 .setting {
    color: grey;
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
@@ -652,7 +648,7 @@ onMounted(() => {
 }
 .deleteClass {
    color: rgba(128, 128, 128, 0.815);
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
@@ -663,7 +659,7 @@ onMounted(() => {
    top: 20%;
    position: absolute;
    width: 80.5%;
-   height: 50%;
+   height: 50.5%;
    border: 1px solid lightgrey;
    outline: none;
    border-radius: 5px;
@@ -693,13 +689,14 @@ onMounted(() => {
    transition: all 0.4s;
    position: relative;
 }
+
 .settingBox h3 {
    transform: translate(45%);
 }
 .closeIcon {
    position: absolute;
-   margin-left: 10.2%;
-   margin-bottom: 66.6%;
+   left: 94.6%;
+   bottom: 93.3%;
    color: grey;
    width: 4%;
    transition: all 0.4s;
@@ -730,6 +727,10 @@ onMounted(() => {
 .settingBox:hover {
    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
 }
+.el-tooltip__trigger {
+   outline: none;
+}
+
 .mask {
    position: fixed;
    top: 0;
@@ -772,17 +773,12 @@ onMounted(() => {
    font-size: 15px;
    padding-left: 5px;
 }
-.valid input:hover {
-   border: rgba(255, 42, 0, 0.319) 2px solid;
-}
-.el-tooltip__trigger {
-   outline: none;
-}
+
 .operation {
    width: 27px;
    position: absolute;
-   left: 1%;
-   top: 1%;
+   left: 2%;
+   top: 2%;
    color: grey;
    transition: all 0.3s;
 }
@@ -814,7 +810,7 @@ onMounted(() => {
 }
 .setting_blue {
    color: grey;
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
@@ -845,7 +841,7 @@ onMounted(() => {
 }
 .deleteClass_blue {
    color: rgba(128, 128, 128, 0.815);
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
@@ -879,7 +875,7 @@ onMounted(() => {
 }
 .setting_green {
    color: grey;
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
@@ -911,7 +907,7 @@ onMounted(() => {
 }
 .deleteClass_green {
    color: rgba(128, 128, 128, 0.815);
-   width: 2%;
+   width: 25px;
    transition: all 0.4s;
    position: absolute;
    top: 26%;
