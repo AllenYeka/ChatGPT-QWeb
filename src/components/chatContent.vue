@@ -518,125 +518,19 @@ onMounted(() => {
 
 
 <style scoped lang="less">
-.userh {
-   position: absolute;
-   margin-left: 10%;
-   top: 5%;
-   width: 6%;
-   border: 2px solid white;
-   border-radius: 100%;
-   opacity: 0.8;
-}
-.username {
-   position: absolute;
-   margin-left: 17.2%;
-   font-size: 85%;
-   margin-top: 2%;
-}
-.userText {
-   margin-left: 17%;
-   margin-top: 4.5%;
-   display: inline-block;
-   color: rgba(0, 0, 0, 0.758);
-   background-color: rgba(255, 0, 0, 0.136);
-   border-radius: 7px;
-   padding: 1%;
-   font-size: 90%;
-}
-.gptHead {
-   margin-top: 1%;
-   margin-left: 10%;
-   position: absolute;
-   width: 5.7%;
-   border: 2px solid white;
-   border-radius: 100%;
-}
-.gptname {
-   position: absolute;
-   font-size: 85%;
-   margin-left: 17.2%;
-   margin-top: 2%;
-}
-.gptText {
-   margin-left: 17%;
-   margin-top: 4.5%;
-   display: inline-block;
-   color: rgba(0, 0, 0, 0.76);
-   background-color: rgba(119, 136, 153, 0.225);
-   border-radius: 7px;
-   padding: 1%;
-   font-size: 90%;
-}
-.twochat {
-   width: 80%;
-   height: auto;
-   margin-left: 12%;
-   margin-bottom: 15px;
+.chatContent {
+   width: 78%;
+   height: 100%;
+   background-color: rgba(255, 136, 0, 0.04);
+   display: flex;
+   flex-wrap: wrap;
+   transition: all 0.4s;
    position: relative;
 }
-.copyDocument {
-   margin-top: 1%;
-   margin-left: 18%;
-   color: grey;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: red;
-   }
-}
-.refresh {
-   position: absolute;
-   color: grey;
-   margin-left: 0.5%;
-   margin-top: 1%;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: red;
-   }
-}
-.userMsg {
-   width: 100%;
-   height: 11%;
-   position: relative;
-   overflow: hidden;
-}
-.setting {
-   color: grey;
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 1.3%;
-   &:hover {
-      color: red;
-   }
-}
-.deleteClass {
-   color: rgba(128, 128, 128, 0.815);
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 4.5%;
-   &:hover {
-      color: red;
-   }
-}
-.userContent {
-   left: 8%;
-   top: 20%;
-   position: absolute;
-   width: 80.5%;
-   height: 50.5%;
-   border: 1px solid lightgrey;
-   outline: none;
-   border-radius: 5px;
-   background: none;
-   padding-left: 8px;
-   font-size: 15px;
-   transition: all 0.2s;
-   margin-right: 10%;
+.myChat {
+   width: 84%;
+   height: 84%;
+   padding-top: 3%;
 }
 .logo {
    width: 16%;
@@ -672,38 +566,125 @@ onMounted(() => {
       margin-top: 30%;
    }
 }
-.myChat {
-   width: 84%;
-   height: 84%;
-   padding-top: 3%;
-}
-.chatContent {
-   width: 78%;
-   height: 100%;
-   background-color: rgba(255, 136, 0, 0.04);
-   display: flex;
-   flex-wrap: wrap;
-   transition: all 0.4s;
+.userMsg {
+   width: 100%;
+   height: 11%;
    position: relative;
-}
-.closeIcon {
-   position: absolute;
-   left: 94.6%;
-   bottom: 93.3%;
-   color: grey;
-   width: 4%;
-   transition: all 0.4s;
-   padding: 5px;
-   &:hover {
-      background-color: red;
-      color: white;
+   overflow: hidden;
+   .setting {
+      color: grey;
+      width: 25px;
+      transition: all 0.4s;
+      position: absolute;
+      top: 26%;
+      left: 1.3%;
+      &:hover {
+         color: red;
+      }
+   }
+   .deleteClass {
+      color: rgba(128, 128, 128, 0.815);
+      width: 25px;
+      transition: all 0.4s;
+      position: absolute;
+      top: 26%;
+      left: 4.5%;
+      &:hover {
+         color: red;
+      }
+   }
+   .userContent {
+      left: 8%;
+      top: 20%;
+      position: absolute;
+      width: 80.5%;
+      height: 50.5%;
+      border: 1px solid lightgrey;
+      outline: none;
+      border-radius: 5px;
+      background: none;
+      padding-left: 8px;
+      font-size: 15px;
+      transition: all 0.2s;
+      margin-right: 10%;
    }
 }
-.el-button.saveButton {
-   width: 80px;
-   border: 1px solid white;
-   position: absolute;
-   left: 40%;
+.twochat {
+   width: 80%;
+   height: auto;
+   margin-left: 12%;
+   margin-bottom: 15px;
+   position: relative;
+   .userh {
+      position: absolute;
+      margin-left: 10%;
+      top: 5%;
+      width: 6%;
+      border: 2px solid white;
+      border-radius: 100%;
+      opacity: 0.8;
+   }
+   .username {
+      position: absolute;
+      margin-left: 17.2%;
+      font-size: 85%;
+      margin-top: 2%;
+   }
+   .userText {
+      margin-left: 17%;
+      margin-top: 4.5%;
+      display: inline-block;
+      color: rgba(0, 0, 0, 0.758);
+      background-color: rgba(255, 0, 0, 0.136);
+      border-radius: 7px;
+      padding: 1%;
+      font-size: 90%;
+   }
+   .gptHead {
+      margin-top: 1%;
+      margin-left: 10%;
+      position: absolute;
+      width: 5.7%;
+      border: 2px solid white;
+      border-radius: 100%;
+   }
+   .gptname {
+      position: absolute;
+      font-size: 85%;
+      margin-left: 17.2%;
+      margin-top: 2%;
+   }
+   .gptText {
+      margin-left: 17%;
+      margin-top: 4.5%;
+      display: inline-block;
+      color: rgba(0, 0, 0, 0.76);
+      background-color: rgba(119, 136, 153, 0.225);
+      border-radius: 7px;
+      padding: 1%;
+      font-size: 90%;
+   }
+   .copyDocument {
+      margin-top: 1%;
+      margin-left: 18%;
+      color: grey;
+      width: 15px;
+      transition: all 0.2s;
+      &:hover {
+         color: red;
+      }
+   }
+   .refresh {
+      position: absolute;
+      color: grey;
+      margin-left: 0.5%;
+      margin-top: 1%;
+      width: 15px;
+      transition: all 0.2s;
+      &:hover {
+         color: red;
+      }
+   }
 }
 .settingBox {
    padding: 2% 3%;
@@ -721,6 +702,25 @@ onMounted(() => {
    }
    h3 {
       transform: translate(45%);
+   }
+   .closeIcon {
+      position: absolute;
+      left: 94.6%;
+      bottom: 93.3%;
+      color: grey;
+      width: 4%;
+      transition: all 0.4s;
+      padding: 5px;
+      &:hover {
+         background-color: red;
+         color: white;
+      }
+   }
+   .el-button.saveButton {
+      width: 80px;
+      border: 1px solid white;
+      position: absolute;
+      left: 40%;
    }
 }
 .el-tooltip__trigger {
@@ -779,6 +779,7 @@ onMounted(() => {
       color: rgba(0, 0, 0, 0.878);
    }
 }
+
 /*蓝色主题*/
 .copyDocument_blue {
    margin-top: 1%;
@@ -843,6 +844,7 @@ onMounted(() => {
       color: blue;
    }
 }
+
 /*绿色主题*/
 .copyDocument_green {
    margin-top: 1%;

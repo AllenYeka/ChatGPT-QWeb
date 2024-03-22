@@ -258,6 +258,7 @@ onMounted(() => {
    transition: all 0.4s;
 }
 
+
 /* 蓝色主题 */
 .newChat_blue {
    width: 90%;
