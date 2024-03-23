@@ -93,7 +93,7 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
       chatboxs[i].style.color = ''
    el.style.color = chatThema.color
 }
-function chatBoxShow() {//window窗口变化时的回调函数
+function windowResize() {//window窗口变化时的回调函数
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
@@ -116,7 +116,7 @@ function chatBoxShow() {//window窗口变化时的回调函数
       emitter.emit('chatBoxShow', 'show')
    }
 }
-function mobileInitHidden() {//移动端初始化隐藏元素
+function mobileInit() {//移动端初始化
    let chatsEl = document.getElementsByClassName('chats')[0]
    if (chatsEl.offsetWidth <= 236) {
       for (let i = 0; i < chats.length; i++)
@@ -127,10 +127,6 @@ function mobileInitHidden() {//移动端初始化隐藏元素
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
       emitter.emit('chatBoxShow', 'hidden')
-   }
-   else {
-      document.getElementsByClassName('chatBox')[0].style.width = '22%'
-      emitter.emit('chatBoxShow', 'show')
    }
 }
 function LingHua() {
@@ -185,8 +181,8 @@ onMounted(() => {
       else//chatBox闭合时
          document.getElementsByClassName('chatBox')[0].style.width = '0%'
    })
-   window.addEventListener('resize', () => { chatBoxShow() })
-   mobileInitHidden()//用于移动端
+   window.addEventListener('resize', () => { windowResize() })
+   mobileInit()//移动端
 })
 
 </script>

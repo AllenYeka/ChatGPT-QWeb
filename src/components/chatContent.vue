@@ -5,7 +5,7 @@
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="valid.userMsg" @keyup.enter="userValid()" />
-            <el-button type="danger" @click="userValid()" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px">验 证</el-button>
+            <el-button type="danger" @click="userValid()" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px;border-radius:0px">验 证</el-button>
          </div>
       </div>
       <div class="myChat">
@@ -150,6 +150,7 @@ let valid = reactive({//验证窗口
    userMsg: '',
    password: '032418'
 })
+
 
 /* watch */
 watch(chatId, (newval, oldval) => {
@@ -399,7 +400,7 @@ function clearAllMessage() {//清空缓存
    ElMessage.success({ message: '缓存已全部清除', duration: 600 })
    location.reload()
 }
-function mobileShowIf() {//移动端部分元素的显示
+function windowResize() {//window窗口变化时的回调函数
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
    if (chatContentEl.offsetWidth < 1000) {//uname和gptname显示与否
       elShowIf.username = false
@@ -419,7 +420,7 @@ function mobileShowIf() {//移动端部分元素的显示
       elShowIf.chatBox = false
    }
 }
-function mobileInit() {//移动端初始化元素
+function mobileInit() {//移动端初始化
    let chatContentEl = document.getElementsByClassName('chatContent')[0]
    if (chatContentEl.offsetWidth < 1000) {//隐藏uname和gptname
       elShowIf.username = false
@@ -437,7 +438,7 @@ function mobileInit() {//移动端初始化元素
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
       elShowIf.operation = false
 }
-function chatBoxShowIf() {//控制chatBox显示
+function chatBoxShowIf() {//控制chatBox显示(点击事件)
    if (elShowIf.chatBox == false) {//展开chatBox
       elShowIf.chatBox = true
       document.getElementsByClassName('chatContent')[0].style.width = '20%'
@@ -459,10 +460,9 @@ onBeforeMount(() => {
       chatList = reactive(JSON.parse(localStorage.getItem('chatList')))
    if (localStorage.getItem('gptParams') != null)
       gptParams = reactive(JSON.parse(localStorage.getItem('gptParams')))
-
 })
 onMounted(() => {
-   window.addEventListener('resize', () => { mobileShowIf() })
+   window.addEventListener('resize', () => { windowResize() })
    emitter.on('chatId', (val) => {//当前聊天记录
       chatId.value = val
       console.log('当前聊天记录id: ' + val)
@@ -505,14 +505,9 @@ onMounted(() => {
          document.getElementsByClassName('logo')[0].style.width = "0%"
          document.getElementsByClassName('myChat')[0].style.width = "100%"
       }
-      else {
-         document.getElementsByClassName('chatContent')[0].style.width = "78%"
-         document.getElementsByClassName('logo')[0].style.width = "16%"
-         document.getElementsByClassName('myChat')[0].style.width = "84%"
-      }
    })
-   mobileInit()//移动端初始化隐藏元素
-   themaRandom()//随机主题
+   mobileInit()//移动端
+   themaRandom()
 })
 </script>
 
@@ -692,7 +687,7 @@ onMounted(() => {
    left: 50%;
    top: 50%;
    transform: translate(-50%, -50%);
-   width: 500px;
+   width: 35%;
    height: 56%;
    border: solid whitesmoke 2px;
    background-color: white;
@@ -740,12 +735,12 @@ onMounted(() => {
 }
 .valid {
    background-color: #f0f0f0;
-   border-radius: 15px;
+   border-radius: 5px;
    width: 560px;
    height: 330px;
    header {
       margin-top: 3%;
-      font: 23px 楷体;
+      font: 22px 楷体;
       text-align: center;
       color: red;
       text-shadow: 2px 2px 5px yellow;
