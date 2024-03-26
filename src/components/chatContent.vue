@@ -191,8 +191,14 @@ function getMessage() {
             }
          }
       },
-      onopen() {
+      onopen(response) {
          console.log('连接成功!')
+         if (response.status == 429) {
+            chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
+            gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
+            localStorage.setItem('chatList', JSON.stringify(chatList))
+            localStorage.setItem('gptParams', JSON.stringify(gptParams))
+         }
       },
       onclose() {
          console.log('连接关闭!')
@@ -280,8 +286,14 @@ function regetMessage() {//重新响应
             }
          }
       },
-      onopen() {
+      onopen(response) {
          console.log('连接成功!')
+         if (response.status == 429) {
+            chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
+            gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
+            localStorage.setItem('chatList', JSON.stringify(chatList))
+            localStorage.setItem('gptParams', JSON.stringify(gptParams))
+         }
       },
       onclose() {
          console.log('连接关闭!')
