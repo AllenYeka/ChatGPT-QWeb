@@ -94,19 +94,7 @@ function sendChatId(chatId, el) {//更改聊天记录集chatId
    el.style.color = chatThema.color
 }
 function windowResize() {//window窗口变化时的回调函数
-   let chatsEl = document.getElementsByClassName('chats')[0]
-   if (chatsEl.offsetWidth <= 236) {
-      for (let i = 0; i < chats.length; i++)
-         chats[i].editIcon = false
-      elShowIf.deleteFilled = false
-      elShowIf.chatDot = false
-   }
-   else {
-      for (let i = 0; i < chats.length; i++)
-         chats[i].editIcon = true
-      elShowIf.deleteFilled = true
-      elShowIf.chatDot = true
-   }
+   /* chatBox的显示与隐藏 */
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
       emitter.emit('chatBoxShow', 'hidden')
@@ -118,12 +106,6 @@ function windowResize() {//window窗口变化时的回调函数
 }
 function mobileInit() {//移动端初始化
    let chatsEl = document.getElementsByClassName('chats')[0]
-   if (chatsEl.offsetWidth <= 236) {
-      for (let i = 0; i < chats.length; i++)
-         chats[i].editIcon = false
-      elShowIf.deleteFilled = false
-      elShowIf.chatDot = false
-   }
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
       emitter.emit('chatBoxShow', 'hidden')
