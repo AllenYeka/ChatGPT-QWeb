@@ -324,7 +324,7 @@ function copyShowIf(chatContentId) {//是否显示复制图标
 }
 function LingHua() {//绫华
    document.getElementsByClassName('chatContent')[0].style.backgroundColor = 'rgba(240, 248, 255, 0.745)'
-   thema.uname = '神里绫华'
+   thema.uname = '绫华'
    thema.copyClass = 'copyDocument_blue'
    thema.refreshClass = 'refresh_blue'
    thema.settingClass = 'setting_blue'
@@ -340,7 +340,7 @@ function LingHua() {//绫华
 }
 function NaXiDa() {//纳西妲
    document.getElementsByClassName('chatContent')[0].style.backgroundColor = 'rgba(144, 238, 167, 0.103)'
-   thema.uname = '纳西妲'
+   thema.uname = '小草'
    thema.copyClass = 'copyDocument_green'
    thema.refreshClass = 'refresh_green'
    thema.settingClass = 'setting_green'
