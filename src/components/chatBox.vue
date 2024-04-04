@@ -171,6 +171,8 @@ onMounted(() => {
 
 
 <style scoped lang="less">
+@import '../myStyle/chatBox/blue.less';//蓝色主题
+@import '../myStyle/chatBox/green.less';//绿色主题
 .userInfo {
    width: 90%;
    height: 12%;
@@ -234,39 +236,5 @@ onMounted(() => {
    justify-content: center;
    overflow: hidden;
    transition: all 0.4s;
-}
-
-/* 蓝色主题 */
-.newChat_blue {
-   width: 90%;
-   height: 7%;
-   border: grey dashed 1px;
-   border-radius: 3%;
-   background: none;
-   font-size: 20px;
-   color: grey;
-   transition: all 0.4s;
-   margin-top: 5%;
-   &:hover {
-      border: 1.5px dashed blue;
-      color: rgba(0, 0, 255, 0.771);
-   }
-}
-
-/* 绿色主题 */
-.newChat_green {
-   width: 90%;
-   height: 7%;
-   border: grey dashed 1px;
-   border-radius: 3%;
-   background: none;
-   font-size: 20px;
-   color: grey;
-   transition: all 0.4s;
-   margin-top: 5%;
-   &:hover {
-      border: 1.5px dashed green;
-      color: green;
-   }
 }
 </style>

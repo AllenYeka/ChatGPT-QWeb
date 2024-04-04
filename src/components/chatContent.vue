@@ -12,14 +12,14 @@
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
                <h5 class="username" v-show="elShowIf.username">{{ thema.uname }}</h5>
-               <h5 class="userDate">{{chat.userDate}}</h5>
-               <img :src="thema.imgsrc" class="userh" />
+               <h5 :class="thema.userDateClass">{{chat.userDate}}</h5>
+               <img :src="thema.imgsrc" :class="thema.userhClass" />
                <div :class="thema.userTextClass">{{ chat.user }}</div><br>
                <CopyDocument :class="thema.copyClass" @click="copyTextToClipboard(chat.user)" /><br>
 
                <h5 class="gptname" v-show="elShowIf.gptname">ChatGPT</h5>
-               <h5 class="gptDate">{{chat.gptDate}}</h5>
-               <img src="../assets/gpt.png" class="gptHead" />
+               <h5 :class="thema.gptDateClass">{{chat.gptDate}}</h5>
+               <img src="../assets/gpt.png" :class="thema.gptHeadClass" />
                <div :class="thema.gptTextClass">{{ chat.gpt }}</div><br>
                <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" v-show="copyShowIf(chat.id)" />
                <Refresh :class="thema.refreshClass" @click="regetMessage()" v-show="regetMessageShowIf(chat.id)" />
@@ -86,7 +86,7 @@
 
 
 <script setup>
-import { ref, reactive, onMounted, watch, onBeforeMount } from "vue"
+import { ref, reactive, onMounted, watch, onBeforeMount, onBeforeUpdate, onUpdated } from "vue"
 import emitter from "../utils/event-bus"
 import { ElMessage } from "element-plus"
 import { fetchEventSource } from '@microsoft/fetch-event-source'
@@ -132,12 +132,16 @@ let thema = reactive({
    settingClass: 'setting',
    copyClass: 'copyDocument',
    refreshClass: 'refresh',
+   userhClass: 'userh',
+   gptHeadClass: 'gptHead',
    buttonType: 'danger',
    userTextClass: 'userText',
    gptTextClass: 'gptText',
    imgsrc: '/src/assets/hutao/h2.jpg',
    color: 'red',
-   deleteClass: 'deleteClass'
+   deleteClass: 'deleteClass',
+   userDateClass: 'userDate',
+   gptDateClass: 'gptDate'
 })
 let mask = reactive({//遮罩层
    setting: false,//设置框
@@ -439,12 +443,10 @@ function windowResize() {//window窗口变化时的回调函数
    }
 }
 function mobileInit() {//移动端初始化
-   let chatContentEl = document.getElementsByClassName('chatContent')[0]
-   if (chatContentEl.offsetWidth < 1000) {//隐藏uname和gptname
+   if (window.innerWidth < 935) {//移动端初始化
       elShowIf.username = false
       elShowIf.gptname = false
-   }
-   if (window.innerWidth < 935) {//移动端初始化
+      elShowIf.chatBox = false
       document.getElementsByClassName('chatContent')[0].style.width = '100%'
       document.getElementsByClassName('logo')[0].style.width = "0%"
       document.getElementsByClassName('myChat')[0].style.width = "100%"
@@ -453,27 +455,12 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('userContent')[0].style.width = "70%"
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
       document.getElementsByClassName('userMsg')[0].getElementsByTagName('button')[0].style.width = '50px'
-      elShowIf.chatBox = false
+      document.getElementsByClassName('settingBox')[0].style.width = '95%'
 
-      let userTexts = document.getElementsByClassName('userText')
-      let gptTexts = document.getElementsByClassName('gptText')
-      let userh = document.getElementsByClassName('userh')
-      let gptHead = document.getElementsByClassName('gptHead')
-      let userDate = document.getElementsByClassName('userDate')
-      let gptDate = document.getElementsByClassName('gptDate')
-      for (let i = 0; i < userTexts.length; i++) {
-         userTexts[i].style.borderRadius = "3px"; gptTexts[i].style.borderRadius = "3px"
-         userTexts[i].style.fontSize = "13px"; gptTexts[i].style.fontSize = "13px"
-         userTexts[i].style.padding = "5px"; gptTexts[i].style.padding = "5px"
-         userTexts[i].style.marginTop = "22px"; gptTexts[i].style.marginTop = "20px"
-         userh[i].style.marginLeft = '5%'; gptHead[i].style.marginLeft = '5%'
-         userh[i].style.width = '10%'; gptHead[i].style.width = '10%'
-         userDate[i].style.left = '17%'; gptDate[i].style.left = '18%'
-         userDate[i].style.marginTop = '1%'; gptDate[i].style.marginTop = '1%'
-      }
 
-      let settingBox = document.getElementsByClassName('settingBox')[0].style
-      settingBox.width = '95%'
+      thema.userhClass = 'userh_mobile'; thema.gptHeadClass = 'gptHead_mobile'
+      thema.userDateClass = 'userDate_mobile'; thema.gptDateClass = 'gptDate_mobile'
+      thema.userTextClass += '_mobile'; thema.gptTextClass += '_mobile'
    }
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
       elShowIf.operation = false
@@ -559,13 +546,17 @@ onMounted(() => {
          document.getElementsByClassName('myChat')[0].style.width = "100%"
       }
    })
-   mobileInit()//移动端
    themaRandom()
+   mobileInit()//移动端
 })
+
 </script>
 
 
 <style scoped lang="less">
+@import '../myStyle/chatContent/mobile.less'; //移动端
+@import '../myStyle/chatContent/blue.less'; //蓝色主题
+@import '../myStyle/chatContent/green.less'; //绿色主题
 .chatContent {
    width: 78%;
    height: 100%;
@@ -837,137 +828,6 @@ onMounted(() => {
    transition: all 0.3s;
    &:hover {
       color: rgba(0, 0, 0, 0.878);
-   }
-}
-
-/*蓝色主题*/
-.copyDocument_blue {
-   margin-top: 1%;
-   margin-left: 18%;
-   color: grey;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: blue;
-   }
-}
-.refresh_blue {
-   position: absolute;
-   color: grey;
-   margin-left: 0.5%;
-   margin-top: 1%;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: blue;
-   }
-}
-.setting_blue {
-   color: grey;
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 1.3%;
-   &:hover {
-      color: rgba(0, 0, 255, 0.771);
-   }
-}
-.userText_blue {
-   margin-left: 17%;
-   margin-top: 4.5%;
-   display: inline-block;
-   color: rgba(0, 0, 0, 0.758);
-   background-color: lightcyan;
-   border-radius: 7px;
-   padding: 1%;
-   font-size: 14px;
-}
-.gptText_blue {
-   margin-left: 17%;
-   margin-top: 4.5%;
-   display: inline-block;
-   color: rgba(0, 0, 0, 0.76);
-   background-color: rgba(128, 0, 128, 0.133);
-   border-radius: 7px;
-   padding: 1%;
-   font-size: 14px;
-}
-.deleteClass_blue {
-   color: rgba(128, 128, 128, 0.815);
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 4.5%;
-   &:hover {
-      color: blue;
-   }
-}
-
-/*绿色主题*/
-.copyDocument_green {
-   margin-top: 1%;
-   margin-left: 18%;
-   color: grey;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: green;
-   }
-}
-.refresh_green {
-   position: absolute;
-   color: grey;
-   margin-left: 0.5%;
-   margin-top: 1%;
-   width: 15px;
-   transition: all 0.2s;
-   &:hover {
-      color: green;
-   }
-}
-.setting_green {
-   color: grey;
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 1.3%;
-   &:hover {
-      color: green;
-   }
-}
-.userText_green {
-   margin-left: 17%;
-   margin-top: 4.5%;
-   display: inline-block;
-   color: rgba(0, 0, 0, 0.758);
-   background-color: rgba(144, 238, 144, 0.473);
-   border-radius: 7px;
-   padding: 1%;
-   font-size: 14px;
-}
-.gptText_green {
-   color: rgba(0, 0, 0, 0.758);
-   background-color: rgba(250, 198, 135, 0.415);
-   border-radius: 7px;
-   padding: 1%;
-   display: inline-block;
-   margin-left: 17%;
-   margin-top: 4.5%;
-   font-size: 14px;
-   position: relative;
-}
-.deleteClass_green {
-   color: rgba(128, 128, 128, 0.815);
-   width: 25px;
-   transition: all 0.4s;
-   position: absolute;
-   top: 26%;
-   left: 4.5%;
-   &:hover {
-      color: green;
    }
 }
 </style>
