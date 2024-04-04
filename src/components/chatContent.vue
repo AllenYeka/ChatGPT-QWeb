@@ -1,13 +1,13 @@
 <template>
    <div class="chatContent">
-      <!--<div class="mask" v-show="mask.valid">
+      <div class="mask" v-show="mask.valid">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="valid.userMsg" @keyup.enter="userValid()" />
             <el-button type="danger" @click="userValid()" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px;border-radius:0px">验 证</el-button>
          </div>
-      </div>-->
+      </div>
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
@@ -454,16 +454,23 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
       document.getElementsByClassName('userMsg')[0].getElementsByTagName('button')[0].style.width = '50px'
       elShowIf.chatBox = false
-      let userText = document.getElementsByClassName('userText')[0].style
-      let gptText = document.getElementsByClassName('gptText')[0].style
-      userText.borderRadius = "3px"; gptText.borderRadius = "3px"
-      userText.fontSize = "13px"; gptText.fontSize = "13px"
-      userText.padding = "5px"; gptText.padding = "5px"
 
-      let userh = document.getElementsByClassName('userh')[0].style
-      let gptHead = document.getElementsByClassName('gptHead')[0].style
-      userh.marginLeft = '5%'; gptHead.marginLeft = '5%'
-      userh.width = '9%'; gptHead.width = '9%'
+      let userTexts = document.getElementsByClassName('userText')
+      let gptTexts = document.getElementsByClassName('gptText')
+      let userh = document.getElementsByClassName('userh')
+      let gptHead = document.getElementsByClassName('gptHead')
+      let userDate = document.getElementsByClassName('userDate')
+      let gptDate = document.getElementsByClassName('gptDate')
+      for (let i = 0; i < userTexts.length; i++) {
+         userTexts[i].style.borderRadius = "3px"; gptTexts[i].style.borderRadius = "3px"
+         userTexts[i].style.fontSize = "13px"; gptTexts[i].style.fontSize = "13px"
+         userTexts[i].style.padding = "5px"; gptTexts[i].style.padding = "5px"
+         userTexts[i].style.marginTop = "22px"; gptTexts[i].style.marginTop = "20px"
+         userh[i].style.marginLeft = '5%'; gptHead[i].style.marginLeft = '5%'
+         userh[i].style.width = '10%'; gptHead[i].style.width = '10%'
+         userDate[i].style.left = '17%'; gptDate[i].style.left = '18%'
+         userDate[i].style.marginTop = '1%'; gptDate[i].style.marginTop = '1%'
+      }
 
       let settingBox = document.getElementsByClassName('settingBox')[0].style
       settingBox.width = '95%'
