@@ -12,11 +12,13 @@
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
                <h5 class="username" v-show="elShowIf.username">{{ thema.uname }}</h5>
+               <h5 class="userDate">{{chat.userDate}}</h5>
                <img :src="thema.imgsrc" class="userh" />
                <div :class="thema.userTextClass">{{ chat.user }}</div><br>
                <CopyDocument :class="thema.copyClass" @click="copyTextToClipboard(chat.user)" /><br>
 
                <h5 class="gptname" v-show="elShowIf.gptname">ChatGPT</h5>
+               <h5 class="gptDate">{{chat.gptDate}}</h5>
                <img src="../assets/gpt.png" class="gptHead" />
                <div :class="thema.gptTextClass">{{ chat.gpt }}</div><br>
                <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" v-show="copyShowIf(chat.id)" />
@@ -119,7 +121,9 @@ let chatList = reactive([//聊天记录的集合(用于渲染)
       content: [{//当前聊天记录
          id: 0,
          user: gptParams[chatId.value - 1].gptParam.messages[0].content,
-         gpt: '可能有部分bug'
+         gpt: '可能有部分bug',
+         userDate: '',
+         gptDate: ''
       }]
    }
 ])
@@ -152,6 +156,7 @@ let valid = reactive({//验证窗口
 })
 
 
+
 /* watch */
 watch(chatId, (newval, oldval) => {
    console.log('chatId:' + oldval + '-->' + newval)
@@ -161,7 +166,7 @@ watch(chatId, (newval, oldval) => {
 /* methods */
 function getMessage() {
    let tempNewUserContent = newUserContent.value//临时变量
-   let newChat = { id: chatList[chatId.value - 1].content.length, user: tempNewUserContent, gpt: '' }
+   let newChat = { id: chatList[chatId.value - 1].content.length, user: tempNewUserContent, gpt: '', userDate: getDate(), gptDate: '' }
    chatList[chatId.value - 1].content.push(newChat)//chatList[chatId.value - 1].content是当前聊天记录
    gptParams[chatId.value - 1].gptParam.messages.push({ role: 'user', content: tempNewUserContent })
    newUserContent.value = ''//清空输入框
@@ -184,7 +189,7 @@ function getMessage() {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
             }
             else {//gpt已经全部响应
-               console.log(chatList[chatId.value - 1].content)
+               chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
                gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
                localStorage.setItem('chatList', JSON.stringify(chatList))
                localStorage.setItem('gptParams', JSON.stringify(gptParams))
@@ -280,6 +285,7 @@ function regetMessage() {//重新响应
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
             }
             else {//gpt已经全部响应
+               chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
                gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })//实现上下文聊天
                localStorage.setItem('chatList', JSON.stringify(chatList))
                localStorage.setItem('gptParams', JSON.stringify(gptParams))
@@ -462,6 +468,19 @@ function chatBoxShowIf() {//控制chatBox显示(点击事件)
       emitter.emit("chatboxExpand", 'hidden')
    }
 }
+function getDate() {
+   const dateCN = new Date();
+   const formatterCN = new Intl.DateTimeFormat('zh-CN', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+   })
+   return formatterCN.format(dateCN)
+}
 
 
 
@@ -637,6 +656,12 @@ onMounted(() => {
       font-size: 85%;
       margin-top: 2%;
    }
+   .userDate {
+      position: absolute;
+      left: 22%;
+      margin-top: 2%;
+      color: grey;
+   }
    .userText {
       margin-left: 17%;
       margin-top: 4.5%;
@@ -660,6 +685,12 @@ onMounted(() => {
       font-size: 85%;
       margin-left: 17.2%;
       margin-top: 2%;
+   }
+   .gptDate {
+      position: absolute;
+      left: 25.5%;
+      margin-top: 2%;
+      color: grey;
    }
    .gptText {
       margin-left: 17%;
