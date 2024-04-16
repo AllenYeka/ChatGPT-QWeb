@@ -334,10 +334,14 @@ function LingHua() {//绫华
    thema.settingClass = 'setting_blue'
    thema.userTextClass = 'userText_blue'
    thema.gptTextClass = 'gptText_blue'
+   if (window.innerWidth < 935) {
+      thema.userTextClass += '_mobile'
+      thema.gptTextClass += '_mobile'
+   }
+   thema.deleteClass = 'deleteClass_blue'
    thema.imgsrc = '/src/assets/linghua/l2.jpg'
    thema.buttonType = 'primary'
    thema.color = 'rgba(0, 0, 255, 0.771)'
-   thema.deleteClass = 'deleteClass_blue'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[0].style.color = 'lightblue'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'lightblue'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/linghua/l3.jpg'
@@ -350,10 +354,14 @@ function NaXiDa() {//纳西妲
    thema.settingClass = 'setting_green'
    thema.userTextClass = 'userText_green'
    thema.gptTextClass = 'gptText_green'
+   if (window.innerWidth < 935) {
+      thema.userTextClass += '_mobile'
+      thema.gptTextClass += '_mobile'
+   }
+   thema.deleteClass = 'deleteClass_green'
    thema.imgsrc = '/src/assets/naxida/n5.jpg'
    thema.buttonType = 'success'
    thema.color = 'green'
-   thema.deleteClass = 'deleteClass_green'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[0].style.color = 'rgba(0, 128, 0, 0.415)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'rgba(0, 128, 0, 0.415)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/naxida/n4.jpg'
@@ -366,10 +374,14 @@ function HuTao() {//胡桃
    thema.settingClass = 'setting'
    thema.userTextClass = 'userText'
    thema.gptTextClass = 'gptText'
+   if (window.innerWidth < 935) {
+      thema.userTextClass += '_mobile'
+      thema.gptTextClass += '_mobile'
+   }
+   thema.deleteClass = 'deleteClass'
    thema.imgsrc = '/src/assets/hutao/h2.jpg'
    thema.buttonType = 'danger'
    thema.color = 'red'
-   thema.deleteClass = 'deleteClass'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[0].style.color = 'rgba(255, 89, 0, 0.245)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'rgba(255, 89, 0, 0.245)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/hutao/h3.jpg'
@@ -456,11 +468,14 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
       document.getElementsByClassName('userMsg')[0].getElementsByTagName('button')[0].style.width = '50px'
       document.getElementsByClassName('settingBox')[0].style.width = '95%'
+      document.getElementsByClassName('settingBox')[0].style.height = '70%'
+      document.getElementsByClassName('closeIcon')[0].style.bottom = '94%'
+      document.getElementsByClassName('closeIcon')[0].style.left = '92%'
 
 
       thema.userhClass = 'userh_mobile'; thema.gptHeadClass = 'gptHead_mobile'
       thema.userDateClass = 'userDate_mobile'; thema.gptDateClass = 'gptDate_mobile'
-      thema.userTextClass += '_mobile'; thema.gptTextClass += '_mobile'
+
    }
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
       elShowIf.operation = false
@@ -470,11 +485,7 @@ function chatBoxShowIf() {//控制chatBox显示(点击事件)
       elShowIf.chatBox = true
       document.getElementsByClassName('chatContent')[0].style.width = '20%'
       emitter.emit("chatboxExpand", 'expand')
-   }
-   else {//收起chatBox
-      elShowIf.chatBox = false
-      document.getElementsByClassName('chatContent')[0].style.width = '100%'
-      emitter.emit("chatboxExpand", 'hidden')
+      elShowIf.operation = false
    }
 }
 function getDate() {
@@ -489,6 +500,22 @@ function getDate() {
       second: '2-digit',
    })
    return formatterCN.format(dateCN)
+}
+function touchChange() {//滑动屏幕
+   let chatContent = document.getElementsByClassName('chatContent')[0]
+   let startx; let starty; let endx; let endy
+   chatContent.addEventListener('touchstart', (el) => {
+      let touch = el.changedTouches
+      startx = touch[0].clientX;
+      starty = touch[0].clientY;
+   })
+   chatContent.addEventListener('touchend', (el) => {
+      let touch = el.changedTouches
+      endx = touch[0].clientX;
+      endy = touch[0].clientY;
+      if (startx < endx)//右滑
+         chatBoxShowIf()
+   })
 }
 
 
@@ -539,13 +566,16 @@ onMounted(() => {
       localStorage.setItem('chatList', JSON.stringify(chatList))
       localStorage.setItem('gptParams', JSON.stringify(gptParams))
    })
-   emitter.on('chatBoxShow', (val) => {//chatBox显示与隐藏
-      if (val == 'hidden') {
+   emitter.on('mobileInit', (val) => {//移动端初始化
+      if (val == 'mobileIndex') {
+         elShowIf.chatBox = false
+         elShowIf.operation = true
          document.getElementsByClassName('chatContent')[0].style.width = "100%"
          document.getElementsByClassName('logo')[0].style.width = "0%"
          document.getElementsByClassName('myChat')[0].style.width = "100%"
       }
    })
+   touchChange()//滑动屏幕
    themaRandom()
    mobileInit()//移动端
 })
