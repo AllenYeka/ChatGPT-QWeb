@@ -105,10 +105,9 @@ function windowResize() {//window窗口变化时的回调函数
    }
 }
 function mobileInit() {//移动端初始化
-   let chatsEl = document.getElementsByClassName('chats')[0]
    if (window.innerWidth < 935) {
       document.getElementsByClassName('chatBox')[0].style.width = '0%'
-      emitter.emit('chatBoxShow', 'hidden')
+      emitter.emit('mobileInit', 'mobileIndex')
    }
 }
 function LingHua() {
@@ -141,6 +140,25 @@ function HuTao() {
    thema.newChatClass = 'newChat'
    thema.uname = '胡桃'
 }
+function touchChange() {//滑动屏幕
+   let chatBox = document.getElementsByClassName('chatBox')[0]
+   let startx; let starty; let endx; let endy
+   chatBox.addEventListener('touchstart', (el) => {
+      let touch = el.changedTouches
+      startx = touch[0].clientX;
+      starty = touch[0].clientY;
+   })
+   chatBox.addEventListener('touchend', (el) => {
+      let touch = el.changedTouches
+      endx = touch[0].clientX;
+      endy = touch[0].clientY;
+      if (startx > endx) {//左滑
+         document.getElementsByClassName('chatBox')[0].style.width = "0%"
+         emitter.emit('mobileInit', 'mobileIndex')
+      }
+   })
+}
+
 
 
 /* 钩子 */
@@ -160,19 +178,18 @@ onMounted(() => {
    emitter.on('chatboxExpand', (val) => {
       if (val == 'expand')//chatBox展开时
          document.getElementsByClassName('chatBox')[0].style.width = '80%'
-      else//chatBox闭合时
-         document.getElementsByClassName('chatBox')[0].style.width = '0%'
    })
    window.addEventListener('resize', () => { windowResize() })
    mobileInit()//移动端
+   touchChange()//滑动屏幕
 })
 
 </script>
 
 
 <style scoped lang="less">
-@import '../myStyle/chatBox/blue.less';//蓝色主题
-@import '../myStyle/chatBox/green.less';//绿色主题
+@import '../myStyle/chatBox/blue.less'; //蓝色主题
+@import '../myStyle/chatBox/green.less'; //绿色主题
 .userInfo {
    width: 90%;
    height: 12%;
