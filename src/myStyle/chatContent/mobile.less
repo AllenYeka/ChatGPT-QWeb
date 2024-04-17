@@ -1,3 +1,56 @@
+@keyframes settingBoxShowMobile {
+   0% {
+      top: 90%;
+      left: 10%;
+      width: 0%;
+      height: 0%;
+   }
+   100% {
+      left: 50%;
+      top: 50%;
+      width: 90%;
+      height: 65%;
+   }
+}
+.settingBox_mobile{
+   padding: 2% 3%;
+   position: fixed;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 90%;
+   height: 65%;
+   border: solid whitesmoke 2px;
+   background-color: white;
+   transition: all 0.3s;
+   animation: settingBoxShowMobile 0.4s 1;
+   overflow: hidden;
+   &:hover {
+      box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
+   }
+   h3 {
+      transform: translate(45%);
+   }
+   .closeIcon {
+      position: absolute;
+      left: 94.6%;
+      bottom: 93.3%;
+      color: grey;
+      width: 4%;
+      transition: all 0.4s;
+      padding: 5px;
+      &:hover {
+         background-color: red;
+         color: white;
+      }
+   }
+   .el-button.saveButton {
+      width: 80px;
+      border: 1px solid white;
+      position: absolute;
+      left: 40%;
+   }
+}
 .userh_mobile {
     position: absolute;
     margin-left: 2%;
