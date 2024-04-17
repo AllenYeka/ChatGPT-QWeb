@@ -42,7 +42,7 @@
          <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;height:50%;position:absolute;right:2%;top:20%;" />
       </div>
       <div class="mask" v-show="mask.setting">
-         <div class="settingBox" v-show="elShowIf.setting">
+         <div :class="thema.settingBoxClass" v-show="elShowIf.setting">
             <h3>配置</h3>
             <Close class="closeIcon" @click="closeSetting()" /><br>
             <el-form :model="formData" label-suffix=":">
@@ -110,7 +110,7 @@ let gptParams = reactive([//chatgpt接口参数
 let formData = reactive({//设置框的表单参数
    key: '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',
    model: 'gpt-3.5-turbo',
-   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4', modelId: 2 }],
+   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',
    thema: '红色'
@@ -121,7 +121,7 @@ let chatList = reactive([//聊天记录的集合(用于渲染)
       content: [{//当前聊天记录
          id: 0,
          user: gptParams[chatId.value - 1].gptParam.messages[0].content,
-         gpt: '可能有部分bug',
+         gpt: '爱情?梦想?年轻人需要的并不是那么天真的东西,没错,就是钙质,只要多多吸收钙质,做什么事都会顺利',
          userDate: '',
          gptDate: ''
       }]
@@ -130,6 +130,7 @@ let chatList = reactive([//聊天记录的集合(用于渲染)
 let thema = reactive({
    uname: '胡桃',
    settingClass: 'setting',
+   settingBoxClass: 'settingBox',
    copyClass: 'copyDocument',
    refreshClass: 'refresh',
    userhClass: 'userh',
@@ -223,6 +224,9 @@ function saveParam() {//保存设置
    gptParams[chatId.value - 1].gptParam.model = formData.model
    gptParams[chatId.value - 1].gptParam.messages[0].content = formData.systemContent1 + ',' + formData.systemContent2
    chatList[chatId.value - 1].content[0].user = formData.systemContent1 + ',' + formData.systemContent2
+   localStorage.setItem('formData', JSON.stringify(formData))
+   localStorage.setItem('chatList', JSON.stringify(chatList))
+   localStorage.setItem('gptParams', JSON.stringify(gptParams))
    elShowIf.setting = false
    mask.setting = false
    ElMessage.success({ message: '保存成功' })
@@ -467,14 +471,13 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('userContent')[0].style.width = "70%"
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
       document.getElementsByClassName('userMsg')[0].getElementsByTagName('button')[0].style.width = '50px'
-      document.getElementsByClassName('settingBox')[0].style.width = '95%'
-      document.getElementsByClassName('settingBox')[0].style.height = '70%'
       document.getElementsByClassName('closeIcon')[0].style.bottom = '94%'
       document.getElementsByClassName('closeIcon')[0].style.left = '92%'
 
 
       thema.userhClass = 'userh_mobile'; thema.gptHeadClass = 'gptHead_mobile'
       thema.userDateClass = 'userDate_mobile'; thema.gptDateClass = 'gptDate_mobile'
+      thema.settingBoxClass += '_mobile'
 
    }
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
@@ -513,7 +516,7 @@ function touchChange() {//滑动屏幕
       let touch = el.changedTouches
       endx = touch[0].clientX;
       endy = touch[0].clientY;
-      if (startx < endx)//右滑
+      if (endx - startx > 100)//右滑
          chatBoxShowIf()
    })
 }
@@ -527,6 +530,8 @@ onBeforeMount(() => {
       chatList = reactive(JSON.parse(localStorage.getItem('chatList')))
    if (localStorage.getItem('gptParams') != null)
       gptParams = reactive(JSON.parse(localStorage.getItem('gptParams')))
+   if (localStorage.getItem('formData') != null)
+      formData = reactive(JSON.parse(localStorage.getItem('formData')))
 })
 onMounted(() => {
    window.addEventListener('resize', () => { windowResize() })
@@ -587,6 +592,20 @@ onMounted(() => {
 @import '../myStyle/chatContent/mobile.less'; //移动端
 @import '../myStyle/chatContent/blue.less'; //蓝色主题
 @import '../myStyle/chatContent/green.less'; //绿色主题
+@keyframes settingBoxShow {
+   0% {
+      top: 90%;
+      left: 26%;
+      width: 0%;
+      height: 0%;
+   }
+   100% {
+      left: 50%;
+      top: 50%;
+      width: 35%;
+      height: 56%;
+   }
+}
 .chatContent {
    width: 78%;
    height: 100%;
@@ -778,6 +797,8 @@ onMounted(() => {
    border: solid whitesmoke 2px;
    background-color: white;
    transition: all 0.3s;
+   animation: settingBoxShow 0.4s 1;
+   overflow: hidden;
    &:hover {
       box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
    }
