@@ -21,8 +21,8 @@
                <h5 :class="thema.gptDateClass">{{chat.gptDate}}</h5>
                <img src="../assets/gpt.png" :class="thema.gptHeadClass" />
                <div :class="thema.gptTextClass">{{ chat.gpt }}</div><br>
-               <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" v-show="copyShowIf(chat.id)" />
-               <Refresh :class="thema.refreshClass" @click="regetMessage()" v-show="regetMessageShowIf(chat.id)" />
+               <CopyDocument id="copyDocument" :class="thema.copyClass" @click="copyTextToClipboard(chat.gpt)" />
+               <Refresh :class="thema.refreshClass" @click="regetMessage(chat.id)" v-show="refreshShowIf(chat.id)" />
             </div>
          </el-scrollbar>
       </div>
@@ -93,6 +93,20 @@ import { fetchEventSource } from '@microsoft/fetch-event-source'
 /* data */
 let chatId = ref(1)//当前聊天记录的id
 const ctrl = new AbortController()//用于fetch
+let sbr = [
+   '正是因为我是一个贪图享乐的人,才更明白人生中有些珍贵的瞬间是不能错过的',
+   "在叫马来之前，要不要干一杯呢？……就为'触网而弹起的网球'干杯,如何?不行吗?那...就敬下一个'遗体'吧...",
+   '男人心中,要有一副指引自己走出荒野的地图',
+   '『文明』『粮食』『民心』『财富』『光荣』『幸福』『权利』『法律』领导世界的人将是第一个拿起餐巾的人。本人!已经拿起那块最初的餐巾了!',
+   '我已经决定吃喜欢的东西,过短命的人生',
+   '假设有人拿起『右边』的餐巾那么其他所有人都不得不跟着选择『右边』的餐巾;如果那人拿起的是『左边』，那所有人都只能选择『左边』，这就是所谓的『社会』...',
+   '吾心吾行澄如明镜，所作所为皆属正义',
+   '结果谁都无法知道,因触网而弹起的网球会落到哪一边,就是因为这样,人们才会希望『女神』真的存在,如果他真的存在的话,不管最后的结果如何,我都能坦然接受啊',
+   '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
+   '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?',
+   '质数只能被1和本身整除,它们是最孤独的数',
+   '虽然大家都不希望『明天是周一』,不过却还是抱著『快乐的周六即将到来』的想法在生活。因为绝对不会倒霉到每天都是周一嘛'
+]
 let apikey = ref('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')
 let newUserContent = ref('你好')//发送框
 let gptParams = reactive([//chatgpt接口参数
@@ -121,7 +135,7 @@ let chatList = reactive([//聊天记录的集合(用于渲染)
       content: [{//当前聊天记录
          id: 0,
          user: gptParams[chatId.value - 1].gptParam.messages[0].content,
-         gpt: '爱情?梦想?年轻人需要的并不是那么天真的东西,没错,就是钙质,只要多多吸收钙质,做什么事都会顺利',
+         gpt: '爱情?梦想?年轻人需要的并不是那么天真的东西。没错,就是钙质,只要多多吸收钙质,做什么事都会顺利',
          userDate: '',
          gptDate: ''
       }]
@@ -159,6 +173,7 @@ let valid = reactive({//验证窗口
    userMsg: '',
    password: '032418'
 })
+
 
 
 
@@ -264,17 +279,37 @@ function sendButton() {//是否禁用发送按钮
       return false
 }
 function copyTextToClipboard(text) {//复制文本
-   navigator.clipboard.writeText(text)
-      .then(() => {
+   if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+      ElMessage.success({ message: '复制成功', duration: 500 })
+   }
+   else {
+      let textArea = document.createElement("textarea")
+      textArea.value = text
+      textArea.style.position = "absolute"//使text area不在viewport，同时设置不可见
+      textArea.style.opacity = 0
+      textArea.style.left = "-999999px"
+      textArea.style.top = "-999999px"
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      return new Promise((res, rej) => {//执行复制命令并移除文本框
+         document.execCommand('copy') ? res() : rej()
+         textArea.remove()
          ElMessage.success({ message: '复制成功', duration: 500 })
       })
-      .catch(err => {
-         ElMessage.error({ message: '复制失败', duration: 500 })
-      });
+   }
 }
-function regetMessage() {//重新响应 
+function regetMessage(chatContentId) {//重新响应
+   while (chatList[chatId.value - 1].content.length != chatContentId + 1) {
+      chatList[chatId.value - 1].content.pop()
+      gptParams[chatId.value - 1].gptParam.messages.pop()
+      gptParams[chatId.value - 1].gptParam.messages.pop()
+   }
    gptParams[chatId.value - 1].gptParam.messages.pop()
    chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = ''
+   console.log(chatList[chatId.value - 1].content);
+   console.log(gptParams[chatId.value - 1].gptParam.messages);
    const eventSource = fetchEventSource('/v1/chat/completions', {
       method: "POST",
       headers: {
@@ -318,13 +353,7 @@ function regetMessage() {//重新响应
       }
    })
 }
-function regetMessageShowIf(chatContentId) {//是否显示refesh图标
-   if (chatContentId == chatList[chatId.value - 1].content.length - 1 && chatContentId > 0)
-      return true
-   else
-      return false
-}
-function copyShowIf(chatContentId) {//是否显示复制图标
+function refreshShowIf(chatContentId) {//是否显示refesh图标
    if (chatContentId > 0)
       return true
    else
@@ -400,7 +429,7 @@ function themaChange() {//主题切换
    emitter.emit('thema', formData.thema)
 }
 function themaRandom() {//随机主题
-   let themaNumber = Math.floor(Math.random() * 3) + 1
+   let themaNumber = Math.floor(Math.random() * 3) + 1//[0,4)
    if (themaNumber == 1)
       formData.thema = '蓝色'
    else if (themaNumber == 2)
@@ -532,6 +561,7 @@ onBeforeMount(() => {
       gptParams = reactive(JSON.parse(localStorage.getItem('gptParams')))
    if (localStorage.getItem('formData') != null)
       formData = reactive(JSON.parse(localStorage.getItem('formData')))
+   chatList[0].content[0].gpt = sbr[Math.floor(Math.random() * sbr.length)]//(0,sbr.length)
 })
 onMounted(() => {
    window.addEventListener('resize', () => { windowResize() })
@@ -540,7 +570,8 @@ onMounted(() => {
       console.log('当前聊天记录id: ' + val)
    })
    emitter.on('newChatId', (val) => {//新建聊天记录
-      chatList.push({ chatId: val, content: [{ id: 0, user: '我是一个男大学生,作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述', gpt: '可能有部分bug' }] })
+      let sbr_gpt = sbr[Math.floor(Math.random() * sbr.length)]//(0,sbr.length)
+      chatList.push({ chatId: val, content: [{ id: 0, user: '我是一个男大学生,作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述', gpt: sbr_gpt }] })
       let msgAndGpt = {
          messageId: val,
          gptParam: {
@@ -775,7 +806,6 @@ onMounted(() => {
       }
    }
    .refresh {
-      position: absolute;
       color: grey;
       margin-left: 0.5%;
       margin-top: 1%;
@@ -862,7 +892,6 @@ onMounted(() => {
       width: 88%;
       margin-left: 6%;
       margin-top: 4%;
-      transition: all 0.4s;
       height: 10%;
       border: grey 1px solid;
       outline: none;
