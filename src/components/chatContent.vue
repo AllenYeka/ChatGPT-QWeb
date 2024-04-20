@@ -36,7 +36,7 @@
             <Setting :class="thema.settingClass" @click="openSetting" />
          </el-tooltip>
          <el-tooltip effect="dark" content="删除当前聊天内容" placement="top">
-            <Delete :class="thema.deleteClass" @click="deleteContent" />
+            <Delete :class="thema.deleteClass" @click="deleteContent(chatId)" />
          </el-tooltip>
          <input type="text" class="userContent" @keyup.enter="getMessage()" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
          <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;height:50%;position:absolute;right:2%;top:20%;" />
@@ -95,20 +95,20 @@ let chatId = ref(1)//当前聊天记录的id
 const ctrl = new AbortController()//用于fetch
 let sbr = [
    '正是因为我是一个贪图享乐的人,才更明白人生中有些珍贵的瞬间是不能错过的',
-   "在叫马来之前，要不要干一杯呢？……就为'触网而弹起的网球'干杯,如何?不行吗?那...就敬下一个'遗体'吧...",
+   "在叫马来之前，要不要干一杯呢？……就为『触网而弹起的网球』干杯,如何?不行吗?那...就敬下一个『遗体』吧...",
    '男人心中,要有一副指引自己走出荒野的地图',
-   '『文明』『粮食』『民心』『财富』『光荣』『幸福』『权利』『法律』领导世界的人将是第一个拿起餐巾的人。本人!已经拿起那块最初的餐巾了!',
+   '『文明』『粮食』『民心』『财富』『光荣』『幸福』『权利』『法律』领导世界的人将是第一个拿起餐巾的人。本人!已经拿起最初的餐巾了!',
    '我已经决定吃喜欢的东西,过短命的人生',
    '假设有人拿起『右边』的餐巾那么其他所有人都不得不跟着选择『右边』的餐巾;如果那人拿起的是『左边』，那所有人都只能选择『左边』，这就是所谓的『社会』...',
    '吾心吾行澄如明镜，所作所为皆属正义',
-   '结果谁都无法知道,因触网而弹起的网球会落到哪一边,就是因为这样,人们才会希望『女神』真的存在,如果他真的存在的话,不管最后的结果如何,我都能坦然接受啊',
+   '结果谁都无法知道,因触网而弹起的网球会落到哪一边,就是因为这样,人们才会希望『女神』真的存在。如果她真的存在的话,不管最后的结果如何,我都能坦然接受',
    '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
    '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?',
    '质数只能被1和本身整除,它们是最孤独的数',
-   '虽然大家都不希望『明天是周一』,不过却还是抱著『快乐的周六即将到来』的想法在生活。因为绝对不会倒霉到每天都是周一嘛'
+   '虽然大家都不希望『明天是周一』,不过却还是抱着『快乐的周六即将到来』的想法在生活。因为绝对不会倒霉到每天都是周一嘛'
 ]
 let apikey = ref('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')
-let newUserContent = ref('你好')//发送框
+let newUserContent = ref('\n')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
       messageId: 1,
@@ -255,22 +255,18 @@ function openSetting() {
    mask.setting = true
 }
 function userContentBorder(el) {
-   if (formData.thema == '绿色') {
+   if (formData.thema == '绿色')
       el.style.border = '1px solid lightgreen'
-      el.style.boxShadow = '1px 1px rgba(144, 238, 144, 0.556)'
-   }
-   else if (formData.thema == '蓝色') {
+
+   else if (formData.thema == '蓝色')
       el.style.border = '1px solid lightblue'
-      el.style.boxShadow = '1.5px 1.5px rgba(0, 187, 255, 0.174)'
-   }
-   else {
+
+   else
       el.style.border = '1px solid rgba(255, 89, 0, 0.245)'
-      el.style.boxShadow = '1.5px 1.5px rgba(255, 89, 0, 0.245)'
-   }
+
 }
 function userContentBorder2(el) {
    el.style.border = '1px solid lightgrey'
-   el.style.boxShadow = '0px 0px rgba(144, 238, 144, 0.556)';
 }
 function sendButton() {//是否禁用发送按钮
    if (newUserContent.value == '')
@@ -359,7 +355,7 @@ function refreshShowIf(chatContentId) {//是否显示refesh图标
    else
       return false
 }
-function LingHua() {//绫华
+function LingHua() {
    document.getElementsByClassName('chatContent')[0].style.backgroundColor = 'rgba(240, 248, 255, 0.745)'
    thema.uname = '绫华'
    thema.copyClass = 'copyDocument_blue'
@@ -379,7 +375,7 @@ function LingHua() {//绫华
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'lightblue'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/linghua/l3.jpg'
 }
-function NaXiDa() {//纳西妲
+function NaXiDa() {
    document.getElementsByClassName('chatContent')[0].style.backgroundColor = 'rgba(144, 238, 167, 0.103)'
    thema.uname = '小草'
    thema.copyClass = 'copyDocument_green'
@@ -399,7 +395,7 @@ function NaXiDa() {//纳西妲
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'rgba(0, 128, 0, 0.415)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/naxida/n4.jpg'
 }
-function HuTao() {//胡桃
+function HuTao() {
    document.getElementsByClassName('chatContent')[0].style.backgroundColor = 'rgba(255, 136, 0, 0.04)'
    thema.uname = '胡桃'
    thema.copyClass = 'copyDocument'
@@ -419,7 +415,7 @@ function HuTao() {//胡桃
    document.getElementsByClassName('logo')[0].getElementsByTagName('div')[1].style.color = 'rgba(255, 89, 0, 0.245)'
    document.getElementsByClassName('logo')[0].getElementsByTagName('img')[0].src = 'src/assets/hutao/h3.jpg'
 }
-function themaChange() {//主题切换
+function themaChange() {
    if (formData.thema == '蓝色')
       LingHua()
    else if (formData.thema == '绿色')
@@ -428,7 +424,7 @@ function themaChange() {//主题切换
       HuTao()
    emitter.emit('thema', formData.thema)
 }
-function themaRandom() {//随机主题
+function themaRandom() {
    let themaNumber = Math.floor(Math.random() * 3) + 1//[0,4)
    if (themaNumber == 1)
       formData.thema = '蓝色'
@@ -438,9 +434,9 @@ function themaRandom() {//随机主题
       formData.thema = '红色'
    themaChange()
 }
-function deleteContent() {//删除聊天内容
-   let content = chatList[chatId.value - 1].content
-   let gptMessage = gptParams[chatId.value - 1].gptParam.messages
+function deleteContent(delChatId) {//删除聊天内容
+   let content = chatList[delChatId - 1].content
+   let gptMessage = gptParams[delChatId - 1].gptParam.messages
    while (gptMessage.length > 1)
       gptMessage.pop()
    if (content.length > 1) {
@@ -468,24 +464,29 @@ function clearAllMessage() {//清空缓存
    location.reload()
 }
 function windowResize() {//window窗口变化时的回调函数
-   let chatContentEl = document.getElementsByClassName('chatContent')[0]
-   if (chatContentEl.offsetWidth < 1000) {//uname和gptname显示与否
-      elShowIf.username = false
-      elShowIf.gptname = false
-   }
-   else {
-      elShowIf.username = true
-      elShowIf.gptname = true
-   }
+   window.addEventListener('resize', () => {
+      let chatContentEl = document.getElementsByClassName('chatContent')[0]
+      if (chatContentEl.offsetWidth < 1000) {//uname和gptname显示与否
+         elShowIf.username = false
+         elShowIf.gptname = false
+         chatContentEl.style.width = '100%'
+      }
+      else {
+         elShowIf.username = true
+         elShowIf.gptname = true
+         chatContentEl.style.width = '78%'
+      }
 
-   if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500) {//chatBox展开与否
-      elShowIf.operation = false
-      elShowIf.chatBox = true
-   }
-   else {
-      elShowIf.operation = true
-      elShowIf.chatBox = false
-   }
+      if (chatContentEl.offsetWidth > 500) {//chatBox展开与否
+         elShowIf.operation = false
+         elShowIf.chatBox = true
+      }
+      else {
+         elShowIf.operation = true
+         elShowIf.chatBox = false
+      }
+   })
+
 }
 function mobileInit() {//移动端初始化
    if (window.innerWidth < 935) {//移动端初始化
@@ -552,7 +553,6 @@ function touchChange() {//滑动屏幕
 
 
 
-
 /* 钩子 */
 onBeforeMount(() => {
    if (localStorage.getItem('chatList') != null)
@@ -564,7 +564,6 @@ onBeforeMount(() => {
    chatList[0].content[0].gpt = sbr[Math.floor(Math.random() * sbr.length)]//(0,sbr.length)
 })
 onMounted(() => {
-   window.addEventListener('resize', () => { windowResize() })
    emitter.on('chatId', (val) => {//当前聊天记录
       chatId.value = val
       console.log('当前聊天记录id: ' + val)
@@ -587,20 +586,20 @@ onMounted(() => {
       localStorage.setItem('gptParams', JSON.stringify(gptParams))
    })
    emitter.on('delChatId', (val) => {//删除聊天记录
-      console.log('删除聊天记录id: ' + val)
-      if (val == chatList.length)//如果删除的是最后一个聊天记录集
-         chatId.value = 1
-
-      chatList.splice(val - 1, 1)
-      for (var i = val - 1; i < chatList.length; i++)
-         chatList[i].chatId = i + 1
-
-      gptParams.splice(val - 1, 1)
-      for (var i = val - 1; i < gptParams.length; i++)
-         gptParams[i].messageId = i + 1
-
-      localStorage.setItem('chatList', JSON.stringify(chatList))
-      localStorage.setItem('gptParams', JSON.stringify(gptParams))
+      if (val == 1)//删除聊天内容
+         deleteContent(1)
+      else {
+         if (val == chatList.length)//如果删除的是最后一个聊天记录集
+            chatId.value = 1
+         chatList.splice(val - 1, 1)
+         for (var i = val - 1; i < chatList.length; i++)
+            chatList[i].chatId = i + 1
+         gptParams.splice(val - 1, 1)
+         for (var i = val - 1; i < gptParams.length; i++)
+            gptParams[i].messageId = i + 1
+         localStorage.setItem('chatList', JSON.stringify(chatList))
+         localStorage.setItem('gptParams', JSON.stringify(gptParams))
+      }
    })
    emitter.on('mobileInit', (val) => {//移动端初始化
       if (val == 'mobileIndex') {
@@ -611,6 +610,7 @@ onMounted(() => {
          document.getElementsByClassName('myChat')[0].style.width = "100%"
       }
    })
+   windowResize()
    touchChange()//滑动屏幕
    themaRandom()
    mobileInit()//移动端
@@ -828,10 +828,6 @@ onMounted(() => {
    background-color: white;
    transition: all 0.3s;
    animation: settingBoxShow 0.4s 1;
-   overflow: hidden;
-   &:hover {
-      box-shadow: 0 3px 10px rgba(128, 128, 128, 0.525);
-   }
    h3 {
       transform: translate(45%);
    }
