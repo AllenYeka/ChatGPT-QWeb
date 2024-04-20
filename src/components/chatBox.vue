@@ -58,7 +58,7 @@ function newChat() {//新建聊天框
 }
 function deleteChat(chat) {//删除聊天框
    if (chat.id == 1)
-      ElMessage.warning({ message: '无法删除', duration: 500 })
+      emitter.emit('delChatId', chat.id)
    else {
       chats.splice(chats.indexOf(chat), 1)
       for (var i = chat.id - 1; i < chats.length; i++)
