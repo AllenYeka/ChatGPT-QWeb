@@ -107,7 +107,13 @@ let sbr = [
    '质数只能被1和本身整除,它们是最孤独的数',
    '虽然大家都不希望『明天是周一』,不过却还是抱着『快乐的周六即将到来』的想法在生活。因为绝对不会倒霉到每天都是周一嘛'
 ]
-let apikey = ref('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')
+let apikeys = reactive([
+   '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',
+   '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',
+   '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',
+   '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'
+])
+let apiIndex = ref(0)
 let newUserContent = ref('\n')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
@@ -181,6 +187,9 @@ let valid = reactive({//验证窗口
 watch(chatId, (newval, oldval) => {
    console.log('chatId:' + oldval + '-->' + newval)
 })
+watch(apiIndex, (newval, oldval) => {
+   console.log('apikey' + apikeys[oldval] + '-->' + apikeys[newval])
+})
 
 
 /* methods */
@@ -195,7 +204,7 @@ function getMessage() {
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
-         'Authorization': 'Bearer ' + apikey.value
+         'Authorization': 'Bearer ' + apikeys[apiIndex.value]
       },
       body: JSON.stringify(gptParams[chatId.value - 1].gptParam),//对象->JSON字符串
       signal: ctrl.signal,
@@ -220,6 +229,10 @@ function getMessage() {
          console.log('连接成功!')
          if (response.status == 429) {
             chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
+            if (apiIndex.value == apikeys.length - 1)
+               apiIndex.value = 0
+            else
+               apiIndex.value++
             gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
             localStorage.setItem('chatList', JSON.stringify(chatList))
             localStorage.setItem('gptParams', JSON.stringify(gptParams))
@@ -310,7 +323,7 @@ function regetMessage(chatContentId) {//重新响应
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
-         'Authorization': 'Bearer ' + apikey.value
+         'Authorization': 'Bearer ' + apikeys[apiIndex.value]
       },
       body: JSON.stringify(gptParams[chatId.value - 1].gptParam),
       signal: ctrl.signal,
@@ -335,6 +348,10 @@ function regetMessage(chatContentId) {//重新响应
          console.log('连接成功!')
          if (response.status == 429) {
             chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
+            if (apiIndex.value == apikeys.length - 1)
+               apiIndex.value = 0
+            else
+               apiIndex.value++
             gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
             localStorage.setItem('chatList', JSON.stringify(chatList))
             localStorage.setItem('gptParams', JSON.stringify(gptParams))
