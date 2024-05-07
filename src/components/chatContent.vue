@@ -248,7 +248,7 @@ function getMessage() {
    })
 }
 function saveParam() {//保存设置
-   apikey.value = formData.key
+   apikeys[0] = formData.key
    gptParams[chatId.value - 1].gptParam.model = formData.model
    gptParams[chatId.value - 1].gptParam.messages[0].content = formData.systemContent1 + ',' + formData.systemContent2
    chatList[chatId.value - 1].content[0].user = formData.systemContent1 + ',' + formData.systemContent2
