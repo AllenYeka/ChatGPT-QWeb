@@ -103,9 +103,7 @@ let sbr = [
    '吾心吾行澄如明镜，所作所为皆属正义',
    '结果谁都无法知道,因触网而弹起的网球会落到哪一边,就是因为这样,人们才会希望『女神』真的存在。如果她真的存在的话,不管最后的结果如何,我都能坦然接受',
    '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
-   '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?',
-   '质数只能被1和本身整除,它们是最孤独的数',
-   '虽然大家都不希望『明天是周一』,不过却还是抱着『快乐的周六即将到来』的想法在生活。因为绝对不会倒霉到每天都是周一嘛'
+   '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?'
 ]
 let apikeys = reactive([
    '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',
@@ -114,7 +112,7 @@ let apikeys = reactive([
    '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'
 ])
 let apiIndex = ref(0)
-let newUserContent = ref('\n')//发送框
+let newUserContent = ref('')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
       messageId: 1,
@@ -845,6 +843,7 @@ onMounted(() => {
    background-color: white;
    transition: all 0.3s;
    animation: settingBoxShow 0.4s 1;
+   overflow: hidden;
    h3 {
       transform: translate(45%);
    }

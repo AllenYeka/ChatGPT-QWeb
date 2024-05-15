@@ -190,6 +190,14 @@ onMounted(() => {
 <style scoped lang="less">
 @import '../myStyle/chatBox/blue.less'; //蓝色主题
 @import '../myStyle/chatBox/green.less'; //绿色主题
+@keyframes chat {
+   0% {
+      opacity: 0;
+   }
+   100% {
+      opacity: 1;
+   }
+}
 .userInfo {
    width: 90%;
    height: 12%;
@@ -213,12 +221,14 @@ onMounted(() => {
       border-radius: 10px;
       transition: all 0.4s;
       font-size: 15px;
+      opacity: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
       overflow: hidden;
       cursor: default;
+      animation: chat 0.6s 1;
    }
    div:hover {
       transform: translate(0px, -3px);
