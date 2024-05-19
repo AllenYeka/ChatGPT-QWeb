@@ -106,7 +106,7 @@ let sbr = [
    '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?'
 ]
 let apikeys = reactive([
-   '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',
+   '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',
    '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',
    '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',
    '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'
