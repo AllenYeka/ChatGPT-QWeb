@@ -105,7 +105,7 @@ let sbr = [
    '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
    '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?'
 ]
-let apikey = reactive('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')
+let apikey = ref('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')
 let newUserContent = ref('')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
