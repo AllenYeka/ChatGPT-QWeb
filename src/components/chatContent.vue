@@ -105,7 +105,7 @@ let sbr = [
    '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
    '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?'
 ]
-let apikey = ref('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')
+let apikey = ref('hk-s6vh29100003214872b98abc265f09731c8640024ce9907a')
 let newUserContent = ref('')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
@@ -120,7 +120,7 @@ let gptParams = reactive([//chatgpt接口参数
    }
 ])
 let formData = reactive({//设置框的表单参数
-   key: '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',
+   key: 'hk-s6vh29100003214872b98abc265f09731c8640024ce9907a',
    model: 'gpt-3.5-turbo',
    models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }],
    systemContent1: '我是一个男大学生',
