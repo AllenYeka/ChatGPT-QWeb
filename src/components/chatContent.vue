@@ -105,13 +105,7 @@ let sbr = [
    '我并不期待能死于病床上,我是个牛仔。我只求一个能够回去的地方...一个在远游后，还等着我回去的地方...',
    '这是一场『试炼』,我认为这是一场让我战胜过去的『试炼』,我接受了,只有在战胜那不成熟的过去后,人才能有所成长...你不也是一样吗?'
 ]
-let apikeys = reactive([
-   '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',
-   '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',
-   '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',
-   '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'
-])
-let apiIndex = ref(0)
+let apikey = reactive('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')
 let newUserContent = ref('')//发送框
 let gptParams = reactive([//chatgpt接口参数
    {
@@ -126,7 +120,7 @@ let gptParams = reactive([//chatgpt接口参数
    }
 ])
 let formData = reactive({//设置框的表单参数
-   key: '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',
+   key: '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',
    model: 'gpt-3.5-turbo',
    models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }],
    systemContent1: '我是一个男大学生',
@@ -185,9 +179,6 @@ let valid = reactive({//验证窗口
 watch(chatId, (newval, oldval) => {
    console.log('chatId:' + oldval + '-->' + newval)
 })
-watch(apiIndex, (newval, oldval) => {
-   console.log('apikey' + apikeys[oldval] + '-->' + apikeys[newval])
-})
 
 
 /* methods */
@@ -202,7 +193,7 @@ function getMessage() {
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
-         'Authorization': 'Bearer ' + apikeys[apiIndex.value]
+         'Authorization': 'Bearer ' + apikey.value
       },
       body: JSON.stringify(gptParams[chatId.value - 1].gptParam),//对象->JSON字符串
       signal: ctrl.signal,
@@ -227,10 +218,6 @@ function getMessage() {
          console.log('连接成功!')
          if (response.status == 429) {
             chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
-            if (apiIndex.value == apikeys.length - 1)
-               apiIndex.value = 0
-            else
-               apiIndex.value++
             gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
             localStorage.setItem('chatList', JSON.stringify(chatList))
             localStorage.setItem('gptParams', JSON.stringify(gptParams))
@@ -246,7 +233,7 @@ function getMessage() {
    })
 }
 function saveParam() {//保存设置
-   apikeys[0] = formData.key
+   apikey.value = formData.key
    gptParams[chatId.value - 1].gptParam.model = formData.model
    gptParams[chatId.value - 1].gptParam.messages[0].content = formData.systemContent1 + ',' + formData.systemContent2
    chatList[chatId.value - 1].content[0].user = formData.systemContent1 + ',' + formData.systemContent2
@@ -321,7 +308,7 @@ function regetMessage(chatContentId) {//重新响应
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
-         'Authorization': 'Bearer ' + apikeys[apiIndex.value]
+         'Authorization': 'Bearer ' + apikey.value
       },
       body: JSON.stringify(gptParams[chatId.value - 1].gptParam),
       signal: ctrl.signal,
@@ -346,10 +333,6 @@ function regetMessage(chatContentId) {//重新响应
          console.log('连接成功!')
          if (response.status == 429) {
             chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
-            if (apiIndex.value == apikeys.length - 1)
-               apiIndex.value = 0
-            else
-               apiIndex.value++
             gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
             localStorage.setItem('chatList', JSON.stringify(chatList))
             localStorage.setItem('gptParams', JSON.stringify(gptParams))
