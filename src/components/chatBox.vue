@@ -190,11 +190,13 @@ onMounted(() => {
 <style scoped lang="less">
 @import '../myStyle/chatBox/blue.less'; //蓝色主题
 @import '../myStyle/chatBox/green.less'; //绿色主题
-@keyframes chat {
+@keyframes slide-in-top {
    0% {
+      transform: translateY(-1000px);
       opacity: 0;
    }
    100% {
+      transform: translateY(0);
       opacity: 1;
    }
 }
@@ -228,11 +230,10 @@ onMounted(() => {
       position: relative;
       overflow: hidden;
       cursor: default;
-      animation: chat 0.6s 1;
-   }
-   div:hover {
-      transform: translate(0px, -3px);
-      box-shadow: 0px 5px 10px rgba(128, 128, 128, 0.484);
+      animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      &:hover {
+         box-shadow: 0px 5px 15px rgba(128, 128, 128, 0.623);
+      }
    }
 }
 .newChat {

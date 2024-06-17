@@ -621,18 +621,14 @@ onMounted(() => {
 @import '../myStyle/chatContent/mobile.less'; //移动端
 @import '../myStyle/chatContent/blue.less'; //蓝色主题
 @import '../myStyle/chatContent/green.less'; //绿色主题
-@keyframes settingBoxShow {
+@keyframes slide-in-bl {
    0% {
-      top: 90%;
-      left: 26%;
-      width: 0%;
-      height: 0%;
+      transform: translateY(1000px) translateX(-1000px);
+      opacity: 0;
    }
    100% {
-      left: 50%;
-      top: 50%;
-      width: 35%;
-      height: 56%;
+      transform: translateY(-50%) translateX(-50%);
+      opacity: 1;
    }
 }
 .chatContent {
@@ -825,7 +821,7 @@ onMounted(() => {
    border: solid whitesmoke 2px;
    background-color: white;
    transition: all 0.3s;
-   animation: settingBoxShow 0.4s 1;
+   animation: slide-in-bl 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
    overflow: hidden;
    h3 {
       transform: translate(45%);
