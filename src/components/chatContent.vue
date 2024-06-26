@@ -122,7 +122,7 @@ let gptParams = reactive([//chatgpt接口参数
 let formData = reactive({//设置框的表单参数
    key: 'hk-s6vh29100003214872b98abc265f09731c8640024ce9907a',
    model: 'gpt-3.5-turbo',
-   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }],
+   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 },{ modelName: 'claude-3-sonnet-20240229', modelId: 3 }],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',
    thema: '红色'
