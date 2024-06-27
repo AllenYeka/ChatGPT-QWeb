@@ -1,13 +1,13 @@
 <template>
    <div class="chatContent">
-      <div class="mask" v-show="mask.valid">
+      <!--<div class="mask" v-show="mask.valid">
          <div class="valid">
             <header>未经授权,请先进行验证</header>
             <img src="../assets/hutao/valid.jpg" />
             <input type="password" v-model="valid.userMsg" @keyup.enter="userValid()" />
             <el-button type="danger" @click="userValid()" style="margin-left:5.7%;margin-top:2%;width:89.8%;height:11.5%;font-size:17px;border-radius:0px">验 证</el-button>
          </div>
-      </div>
+      </div>-->
       <div class="myChat">
          <el-scrollbar>
             <div class="twochat" v-for="chat of chatList[chatId - 1].content" :key="chat.id">
@@ -122,7 +122,7 @@ let gptParams = reactive([//chatgpt接口参数
 let formData = reactive({//设置框的表单参数
    key: 'hk-s6vh29100003214872b98abc265f09731c8640024ce9907a',
    model: 'gpt-3.5-turbo',
-   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 },{ modelName: 'claude-3-sonnet-20240229', modelId: 3 }],
+   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }, { modelName: 'claude-3-sonnet-20240229', modelId: 3 }],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',
    thema: '红色'
@@ -206,21 +206,18 @@ function getMessage() {
             if (finish_reason != 'stop') {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
             }
-            else {//gpt已经全部响应
-               chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
-               gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
-               localStorage.setItem('chatList', JSON.stringify(chatList))
-               localStorage.setItem('gptParams', JSON.stringify(gptParams))
-            }
+         }
+         else {//gpt或claude已经全部响应
+            chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
+            gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
+            localStorage.setItem('chatList', JSON.stringify(chatList))
+            localStorage.setItem('gptParams', JSON.stringify(gptParams))
          }
       },
       onopen(response) {
          console.log('连接成功!')
          if (response.status == 429) {
-            chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = '429 Too Many Requests: You exceeded your current quota, please check your plan and billing details'
-            gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
-            localStorage.setItem('chatList', JSON.stringify(chatList))
-            localStorage.setItem('gptParams', JSON.stringify(gptParams))
+            console.log('429错误')
          }
       },
       onclose() {
@@ -321,12 +318,12 @@ function regetMessage(chatContentId) {//重新响应
             if (finish_reason != 'stop') {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
             }
-            else {//gpt已经全部响应
-               chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
-               gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })//实现上下文聊天
-               localStorage.setItem('chatList', JSON.stringify(chatList))
-               localStorage.setItem('gptParams', JSON.stringify(gptParams))
-            }
+         }
+         else {//gpt或claude已经全部响应
+            chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
+            gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
+            localStorage.setItem('chatList', JSON.stringify(chatList))
+            localStorage.setItem('gptParams', JSON.stringify(gptParams))
          }
       },
       onopen(response) {
