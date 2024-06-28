@@ -10,11 +10,11 @@
             <el-icon v-show="chat.saveIcon" @click="saveName(chat)" style="position:absolute;right:28px">
                <DocumentChecked />
             </el-icon>
-            <el-icon v-show="chat.editIcon" @click="renameChat(chat)" style="position:absolute;right:28px">
+            <el-icon v-show="chat.editIcon" @click="renameChat(chat)" style="position:absolute;right:28px;cursor:pointer;">
                <EditPen />
             </el-icon>
             <input type="text" v-show="chat.renameInput" @keyup.enter="saveName(chat)" v-model="chat.content" style="width:20%;height:30%;background:none;">
-            <el-icon @click.stop="deleteChat(chat)" v-show="elShowIf.deleteFilled" style="position:absolute;right:5px">
+            <el-icon @click.stop="deleteChat(chat)" v-show="elShowIf.deleteFilled" style="position:absolute;right:5px;cursor:pointer;">
                <DeleteFilled />
             </el-icon>
          </div>

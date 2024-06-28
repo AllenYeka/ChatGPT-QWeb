@@ -39,7 +39,7 @@
             <Delete :class="thema.deleteClass" @click="deleteContent(chatId)" />
          </el-tooltip>
          <input type="text" class="userContent" @keyup.enter="getMessage()" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
-         <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position" style="width:6.5%;height:50%;position:absolute;right:2%;top:20%;" />
+         <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position"/>
       </div>
       <div class="mask" v-show="mask.setting">
          <div :class="thema.settingBoxClass" v-show="elShowIf.setting">
@@ -447,6 +447,7 @@ function deleteContent(delChatId) {//删除聊天内容
 function userValid() {//验证
    if (valid.userMsg == valid.password) {
       mask.valid = false
+      sessionStorage.setItem('password', valid.password)
       ElMessage.success({ message: '验证成功', duration: 1000 })
    }
    else
@@ -495,15 +496,14 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('deleteClass')[0].style.display = "none"
       document.getElementsByClassName('userContent')[0].style.width = "70%"
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
-      document.getElementsByClassName('userMsg')[0].getElementsByTagName('button')[0].style.width = '50px'
       document.getElementsByClassName('closeIcon')[0].style.bottom = '94%'
       document.getElementsByClassName('closeIcon')[0].style.left = '92%'
+      document.getElementsByClassName('userMsg')[0].getElementsByClassName('el-button')[0].style.width='13%'
 
 
       thema.userhClass = 'userh_mobile'; thema.gptHeadClass = 'gptHead_mobile'
       thema.userDateClass = 'userDate_mobile'; thema.gptDateClass = 'gptDate_mobile'
       thema.settingBoxClass += '_mobile'
-
    }
    if (document.getElementsByClassName('chatContent')[0].offsetWidth > 500)
       elShowIf.operation = false
@@ -541,7 +541,7 @@ function touchChange() {//滑动屏幕
       let touch = el.changedTouches
       endx = touch[0].clientX;
       endy = touch[0].clientY;
-      if (endx - startx > 100)//右滑
+      if (endx - startx > 70)//右滑
          chatBoxShowIf()
    })
 }
@@ -557,6 +557,8 @@ onBeforeMount(() => {
    if (localStorage.getItem('formData') != null)
       formData = reactive(JSON.parse(localStorage.getItem('formData')))
    chatList[0].content[0].gpt = sbr[Math.floor(Math.random() * sbr.length)]//(0,sbr.length)
+   if (sessionStorage.getItem('password') == valid.password)
+      mask.valid = false
 })
 onMounted(() => {
    emitter.on('chatId', (val) => {//当前聊天记录
@@ -688,6 +690,7 @@ onMounted(() => {
       position: absolute;
       top: 26%;
       left: 1.3%;
+      cursor: pointer;
       &:hover {
          color: red;
       }
@@ -699,6 +702,7 @@ onMounted(() => {
       position: absolute;
       top: 26%;
       left: 4.5%;
+      cursor: pointer;
       &:hover {
          color: red;
       }
@@ -717,6 +721,9 @@ onMounted(() => {
       font-size: 15px;
       transition: all 0.2s;
       margin-right: 10%;
+   }
+   .el-button{
+      width:7%;height:50%;position:absolute;right:2%;top:20%;
    }
 }
 .twochat {
