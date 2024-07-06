@@ -39,7 +39,7 @@
             <Delete :class="thema.deleteClass" @click="deleteContent(chatId)" />
          </el-tooltip>
          <input type="text" class="userContent" @keyup.enter="getMessage()" v-model="newUserContent" @focus="userContentBorder($event.target)" @blur="userContentBorder2($event.target)" />
-         <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position"/>
+         <el-button @click="getMessage()" :disabled="sendButton()" :type="thema.buttonType" size="large" icon="Position" />
       </div>
       <div class="mask" v-show="mask.setting">
          <div :class="thema.settingBoxClass" v-show="elShowIf.setting">
@@ -47,7 +47,7 @@
             <Close class="closeIcon" @click="closeSetting()" /><br>
             <el-form :model="formData" label-suffix=":">
                <el-form-item label="API-KEY">
-                  <el-input v-model="formData.key" clearable />
+                  <el-input type="password" v-model="formData.key" clearable />
                </el-form-item>
 
                <el-form-item label="model">
@@ -122,7 +122,13 @@ let gptParams = reactive([//chatgpt接口参数
 let formData = reactive({//设置框的表单参数
    key: 'hk-s6vh29100003214872b98abc265f09731c8640024ce9907a',
    model: 'gpt-3.5-turbo',
-   models: [{ modelName: 'gpt-3.5-turbo', modelId: 1 }, { modelName: 'gpt-4-1106-preview', modelId: 2 }, { modelName: 'claude-3-sonnet-20240229', modelId: 3 }],
+   models: [
+      { modelName: 'gpt-3.5-turbo', modelId: 1 },
+      { modelName: 'gpt-4o', modelId: 2 },
+      { modelName: 'gpt-4-1106-preview', modelId: 3 },
+      { modelName: 'claude-3-sonnet-20240229', modelId: 4 },
+      { modelName: 'gemini-pro', modelId: 5 }
+   ],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',
    thema: '红色'
@@ -498,7 +504,7 @@ function mobileInit() {//移动端初始化
       document.getElementsByClassName('userContent')[0].style.marginLeft = "10px"
       document.getElementsByClassName('closeIcon')[0].style.bottom = '94%'
       document.getElementsByClassName('closeIcon')[0].style.left = '92%'
-      document.getElementsByClassName('userMsg')[0].getElementsByClassName('el-button')[0].style.width='13%'
+      document.getElementsByClassName('userMsg')[0].getElementsByClassName('el-button')[0].style.width = '13%'
 
 
       thema.userhClass = 'userh_mobile'; thema.gptHeadClass = 'gptHead_mobile'
@@ -722,8 +728,12 @@ onMounted(() => {
       transition: all 0.2s;
       margin-right: 10%;
    }
-   .el-button{
-      width:7%;height:50%;position:absolute;right:2%;top:20%;
+   .el-button {
+      width: 7%;
+      height: 50%;
+      position: absolute;
+      right: 2%;
+      top: 20%;
    }
 }
 .twochat {
