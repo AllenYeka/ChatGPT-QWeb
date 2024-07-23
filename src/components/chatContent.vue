@@ -212,6 +212,12 @@ function getMessage() {
             if (finish_reason != 'stop') {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
             }
+            else {
+               chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
+               gptParams[chatId.value - 1].gptParam.messages.push({ role: 'assistant', content: chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt })
+               localStorage.setItem('chatList', JSON.stringify(chatList))
+               localStorage.setItem('gptParams', JSON.stringify(gptParams))
+            }
          }
          else {//gpt或claude已经全部响应
             chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gptDate = getDate()
