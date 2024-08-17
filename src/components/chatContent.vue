@@ -124,10 +124,12 @@ let formData = reactive({//设置框的表单参数
    model: 'gpt-3.5-turbo',
    models: [
       { modelName: 'gpt-3.5-turbo', modelId: 1 },
-      { modelName: 'gpt-4o', modelId: 2 },
-      { modelName: 'gpt-4-1106-preview', modelId: 3 },
-      { modelName: 'claude-3-sonnet-20240229', modelId: 4 },
-      { modelName: 'gemini-pro', modelId: 5 }
+      { modelName: 'gpt-4o-mini', modelId: 2 },
+      { modelName: 'gpt-4o', modelId: 3 },
+      { modelName: 'chatgpt-4o-latest', modelId: 4 },
+      { modelName: 'gpt-4-1106-preview', modelId: 5 },
+      { modelName: 'claude-3-sonnet-20240229', modelId: 6 },
+      { modelName: 'gemini-pro', modelId: 7 }
    ],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',

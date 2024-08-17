@@ -17,7 +17,7 @@ export default defineConfig({
   server: {
     port: 5380,
     proxy: {
-      "/v1/chat/completions": { target: 'https://wrq6827.top:443/', secure: false, },
+      "/v1/chat/completions": { target: 'https://wrq6827.top:443/', secure: false, changeOrigin: true },
     },
   },
 })
