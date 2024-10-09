@@ -125,11 +125,12 @@ let formData = reactive({//设置框的表单参数
    models: [
       { modelName: 'gpt-3.5-turbo', modelId: 1 },
       { modelName: 'gpt-4o-mini', modelId: 2 },
-      { modelName: 'gpt-4o', modelId: 3 },
-      { modelName: 'chatgpt-4o-latest', modelId: 4 },
-      { modelName: 'gpt-4-1106-preview', modelId: 5 },
-      { modelName: 'claude-3-sonnet-20240229', modelId: 6 },
-      { modelName: 'gemini-pro', modelId: 7 }
+      { modelName: 'gemini-pro-1.5', modelId: 3 },
+      { modelName: 'gpt-4o', modelId: 4 },
+      { modelName: 'chatgpt-4o-latest', modelId: 5 },
+      { modelName: 'gpt-4-turbo-2024-04-09', modelId: 6 },
+      { modelName: 'gpt-4', modelId: 7 },
+      { modelName: 'claude-3-opus-20240229', modelId: 8 }
    ],
    systemContent1: '我是一个男大学生',
    systemContent2: '作为我的傲娇女朋友和我对话,在括号里附上必要的动作描述',
@@ -191,6 +192,10 @@ watch(chatId, (newval, oldval) => {
 
 /* methods */
 function getMessage() {
+   if(newUserContent.value==''){
+      ElMessage.warning({ message: '发送消息不能为空' })
+      return
+   }
    let tempNewUserContent = newUserContent.value//临时变量
    let newChat = { id: chatList[chatId.value - 1].content.length, user: tempNewUserContent, gpt: '', userDate: getDate(), gptDate: '' }
    chatList[chatId.value - 1].content.push(newChat)//chatList[chatId.value - 1].content是当前聊天记录
@@ -210,6 +215,9 @@ function getMessage() {
          if (event.data != '[DONE]') {
             let result = JSON.parse(event.data)//JSON字符串->对象
             let content = result.choices[0].delta.content
+            console.log(content)
+            if(Object.keys(result.choices[0].delta).length === 0)//空对象处理
+               content=''
             let finish_reason = result.choices[0].finish_reason
             if (finish_reason != 'stop') {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
