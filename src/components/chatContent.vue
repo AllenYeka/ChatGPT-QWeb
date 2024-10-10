@@ -202,7 +202,7 @@ function getMessage() {
    gptParams[chatId.value - 1].gptParam.messages.push({ role: 'user', content: tempNewUserContent })
    newUserContent.value = ''//清空输入框
 
-   const eventSource = fetchEventSource('/v1/chat/completions', {
+   const eventSource = fetchEventSource('/api/v1/chat/completions', {
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
@@ -323,7 +323,7 @@ function regetMessage(chatContentId) {//重新响应
    chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt = ''
    console.log(chatList[chatId.value - 1].content);
    console.log(gptParams[chatId.value - 1].gptParam.messages);
-   const eventSource = fetchEventSource('/v1/chat/completions', {
+   const eventSource = fetchEventSource('/api/v1/chat/completions', {
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
