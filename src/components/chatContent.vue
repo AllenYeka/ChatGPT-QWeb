@@ -183,7 +183,6 @@ let valid = reactive({//验证窗口
 
 
 
-
 /* watch */
 watch(chatId, (newval, oldval) => {
    console.log('chatId:' + oldval + '-->' + newval)
@@ -192,7 +191,7 @@ watch(chatId, (newval, oldval) => {
 
 /* methods */
 function getMessage() {
-   if(newUserContent.value==''){
+   if (newUserContent.value == '') {
       ElMessage.warning({ message: '发送消息不能为空' })
       return
    }
@@ -216,8 +215,8 @@ function getMessage() {
             let result = JSON.parse(event.data)//JSON字符串->对象
             let content = result.choices[0].delta.content
             console.log(content)
-            if(Object.keys(result.choices[0].delta).length === 0)//空对象处理
-               content=''
+            if (Object.keys(result.choices[0].delta).length === 0)//空对象处理
+               content = ''
             let finish_reason = result.choices[0].finish_reason
             if (finish_reason != 'stop') {
                chatList[chatId.value - 1].content[chatList[chatId.value - 1].content.length - 1].gpt += content
@@ -467,7 +466,7 @@ function deleteContent(delChatId) {//删除聊天内容
       ElMessage.warning({ message: '无法删除', duration: 600 })
 }
 function userValid() {//验证
-   if (valid.userMsg == valid.password) {
+   if (valid.userMsg == valid.password || verifyCode(valid.userMsg) || verifyCode(valid.password)) {
       mask.valid = false
       sessionStorage.setItem('password', valid.password)
       ElMessage.success({ message: '验证成功', duration: 1000 })
@@ -566,6 +565,20 @@ function touchChange() {//滑动屏幕
       if (endx - startx > 70)//右滑
          chatBoxShowIf()
    })
+}
+function verifyCode(encode) {//解密
+   const code = JSON.parse(window.atob(encode))
+   const now = new Date().getTime()
+   if (now >= code.startTime && now <= code.endTime)
+      return true
+   return false
+}
+function getCode() {//获取通行证
+   const code = {
+      startTime: new Date().getTime(),
+      endTime: new Date().getTime() + 24 * 60 * 60 * 1000
+   }
+   return window.btoa(JSON.stringify(code))
 }
 
 
