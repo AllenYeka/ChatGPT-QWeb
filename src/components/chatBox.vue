@@ -44,7 +44,6 @@ let elShowIf = reactive({//部分元素的显示与否
 })
 
 
-
 /* method */
 function newChat() {//新建聊天框
    if (chats.length == 8)
@@ -230,7 +229,7 @@ onMounted(() => {
       position: relative;
       overflow: hidden;
       cursor: default;
-      animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      animation: slide-in-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
       &:hover {
          box-shadow: 0px 5px 15px rgba(128, 128, 128, 0.623);
       }
