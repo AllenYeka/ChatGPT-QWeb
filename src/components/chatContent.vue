@@ -182,7 +182,6 @@ let valid = reactive({//验证窗口
 })
 
 
-
 /* watch */
 watch(chatId, (newval, oldval) => {
    console.log('chatId:' + oldval + '-->' + newval)
@@ -466,9 +465,9 @@ function deleteContent(delChatId) {//删除聊天内容
       ElMessage.warning({ message: '无法删除', duration: 600 })
 }
 function userValid() {//验证
-   if (valid.userMsg == valid.password || verifyCode(valid.userMsg) || verifyCode(valid.password)) {
+   if (valid.userMsg == valid.password || verifyCode(valid.userMsg)) {
       mask.valid = false
-      sessionStorage.setItem('password', valid.password)
+      sessionStorage.setItem('password', valid.userMsg)
       ElMessage.success({ message: '验证成功', duration: 1000 })
    }
    else
@@ -567,6 +566,8 @@ function touchChange() {//滑动屏幕
    })
 }
 function verifyCode(encode) {//解密
+   if (encode == null || encode == '' || typeof (encode) == "undefined")
+      return false
    const code = JSON.parse(window.atob(encode))
    const now = new Date().getTime()
    if (now >= code.startTime && now <= code.endTime)
@@ -592,7 +593,7 @@ onBeforeMount(() => {
    if (localStorage.getItem('formData') != null)
       formData = reactive(JSON.parse(localStorage.getItem('formData')))
    chatList[0].content[0].gpt = sbr[Math.floor(Math.random() * sbr.length)]//(0,sbr.length)
-   if (sessionStorage.getItem('password') == valid.password)
+   if (sessionStorage.getItem('password') == valid.password || verifyCode(sessionStorage.getItem('password')))
       mask.valid = false
 })
 onMounted(() => {
